@@ -1,3 +1,4 @@
+using LinkBaseApi.Services;
 using LinkBaseApi.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,7 @@ builder.Services.AddDbContext<DataContext>(options =>
   options.UseNpgsql(connectionString);
 });
 
+builder.Services.AddScoped<ValidationService>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

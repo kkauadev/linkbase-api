@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LinkBaseApi.Services;
 using LinkBaseApi.Context;
 using LinkBaseApi.DTOs;
 using LinkBaseApi.Models;
@@ -7,18 +8,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinkBaseApi.Controllers
 {
-  public class FolderController : ControllerBase
+  public class FolderController
+      (ILogger<FolderController> logger, DataContext dataContext,
+          IMapper mapper, ValidationService validationService) : ControllerBase
   {
-    public readonly ILogger<FolderController> _logger;
-    public readonly DataContext _dataContext;
-    public readonly IMapper _mapper;
-
-    public FolderController(ILogger<FolderController> logger, DataContext dataContext, IMapper mapper)
-    {
-      _logger = logger;
-      _dataContext = dataContext;
-      _mapper = mapper;
-    }
+    public readonly ILogger<FolderController> _logger = logger;
+    public readonly DataContext _dataContext = dataContext;
+    public readonly IMapper _mapper = mapper;
+    public readonly ValidationService _validationService = validationService;
 
     [HttpGet("/folders/{id}")]
     public async Task<ActionResult<List<Folder>>> GetFoldersByUser(string id)
@@ -34,10 +31,13 @@ namespace LinkBaseApi.Controllers
     [HttpPost("/folder/{authorId}")]
     public async Task<ActionResult<Folder>> CreateFolder(string authorId, [FromBody] FolderDTO folderDTO)
     {
-      if (!ModelState.IsValid)
+      var (isValid, errorMessage) = _validationService.ValidateFolderCreation(folderDTO);
+
+      if (!isValid)
       {
-        return BadRequest();
+        return BadRequest(errorMessage);
       }
+
       if (!Guid.TryParse(authorId, out Guid userId))
       {
         return BadRequest("Insira um ID válido");
@@ -47,13 +47,14 @@ namespace LinkBaseApi.Controllers
 
       if (user == null)
       {
-        return BadRequest();
+        return BadRequest("Usuário não encontrado");
       }
 
       Folder folder = new()
       {
         UserId = userId,
         Name = folderDTO.Name,
+        Description = folderDTO.Description ?? null,
       };
 
       _dataContext.Folders.Add(folder);
@@ -62,14 +63,9 @@ namespace LinkBaseApi.Controllers
       return CreatedAtAction(nameof(CreateFolder), new { id = folder.Id }, folder);
     }
 
-    [HttpDelete("/folder/{authorId}/{id}")]
-    public async Task<ActionResult<Folder>> DeleteFolder(string authorId, string id)
+    [HttpDelete("/folder/{id}")]
+    public async Task<ActionResult<Folder>> DeleteFolder(string id)
     {
-      if (!Guid.TryParse(authorId, out Guid userId))
-      {
-        return BadRequest("Insira um ID de usuário válido");
-      }
-
       if (!Guid.TryParse(id, out Guid folderId))
       {
         return BadRequest("Insira um ID de pasta válido");
@@ -88,13 +84,12 @@ namespace LinkBaseApi.Controllers
       return Ok($"Pasta ({folder.Name} - {folder.Id}) removida com sucesso");
     }
 
-    [HttpPut("/folder/{authorId}/{id}")]
-    public async Task<ActionResult<Folder>> UpdateFolderById(string authorId, string id,[FromBody] FolderDTO folderDTO)
+    [HttpPut("/folder/{id}")]
+    public async Task<ActionResult<Folder>> UpdateFolderById(string id,[FromBody] FolderDTOUpdate folderDTOUpdate)
     {
-      if (!Guid.TryParse(authorId, out Guid userId))
-      {
-        return BadRequest("Insira um ID de usuário válido");
-      }
+      var (isValid, errorMessage) = _validationService.ValidateFolderUpdate(folderDTOUpdate);
+
+      if (!isValid) return BadRequest(errorMessage); 
 
       if (!Guid.TryParse(id, out Guid folderId))
       {
@@ -104,22 +99,22 @@ namespace LinkBaseApi.Controllers
       Folder? folder = _dataContext.Folders.Find(folderId);
       if (folder == null)
       {
-        return BadRequest();
+        return BadRequest("A pasta inserida não existe");
       }
 
-      if (!string.IsNullOrEmpty(folderDTO.Name))
+      if (!string.IsNullOrEmpty(folderDTOUpdate.Name))
       {
-        folder.Name = folderDTO.Name;
+        folder.Name = folderDTOUpdate.Name;
       }
-      if (!string.IsNullOrEmpty(folderDTO.Description))
+      if (!string.IsNullOrEmpty(folderDTOUpdate.Description))
       {
-        folder.Description = folderDTO.Description;
+        folder.Description = folderDTOUpdate.Description;
       }
 
       _dataContext.Update(folder);
       await _dataContext.SaveChangesAsync();
 
-      return Ok();
+      return Ok(folder);
     }
   }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LinkBaseApi.Services;
 using LinkBaseApi.Context;
 using LinkBaseApi.DTOs;
 using LinkBaseApi.Helpers;
@@ -13,10 +14,12 @@ namespace LinkBaseApi.Controllers
     public readonly ILogger<UserController> _logger;
     public readonly DataContext _dataContext;
     public readonly IMapper _mapper;
-    public UserController(ILogger<UserController> logger, DataContext dataContext, IMapper mapper) { 
+    public readonly ValidationService _validationService;
+    public UserController(ILogger<UserController> logger, DataContext dataContext, IMapper mapper, ValidationService validationService) { 
       _logger = logger;
       _dataContext = dataContext;
       _mapper = mapper;
+      _validationService = validationService;
     }
 
     [HttpGet("/users")]
@@ -46,15 +49,15 @@ namespace LinkBaseApi.Controllers
     [HttpPost("/user")]
     public async Task<ActionResult<User>> Post([FromBody] UserDTO userDTO)
     {
-      if (!ModelState.IsValid)
+      var (isValid, errorMessage) = _validationService.ValidateUserCreation(userDTO);
+      if (!isValid)
       {
-        return BadRequest(ModelState);
+        return BadRequest(errorMessage);
       }
 
       if (_dataContext.Users.Any(u => u.Email == userDTO.Email || u.Username == userDTO.Username))
       {
-        ModelState.AddModelError("Campo já utilizado", "Este e-mail ou username já está sendo utilizado.");
-        return BadRequest(ModelState);
+        return BadRequest("Este e-mail ou username já está sendo utilizado.");
       }
 
       PasswordHasher passwordHasher = new();
@@ -101,6 +104,33 @@ namespace LinkBaseApi.Controllers
       await _dataContext.SaveChangesAsync();
 
       return Ok($"Usuário {existingUser.Username} atualizado com sucesso");
+    }
+
+    [HttpPatch("/user/bio/{id}")]
+    public async Task<ActionResult> UpdateUserBio(string id, [FromBody] string bio)
+    {
+      if (!Guid.TryParse(id, out Guid userId))
+      {
+        return BadRequest("Insira um ID válido");
+      }
+      if (string.IsNullOrEmpty(bio))
+      {
+        return BadRequest("A Bio não pode ser vazia");
+      }
+
+      User? user = await _dataContext.Users.FindAsync(userId);
+
+      if (user == null) 
+      {
+        return NotFound("Usuário não encontrado");
+      }
+
+      user.Bio = bio;
+
+      _dataContext.Update(user);
+      await _dataContext.SaveChangesAsync();
+
+      return Ok();
     }
 
     [HttpDelete("/user/{id}")]
