@@ -1,14 +1,13 @@
-﻿namespace linkbase_api.Models
+﻿namespace LinkBaseApi.Models
 {
   public class Folder
   {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public User User { get; set; }
-    public Guid UserId { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public required Guid UserId { get; set; }
+    public required string Name { get; set; }
+    public string? Description { get; set; }
     public ICollection<Link>? Links { get; set; }
-    public DateTime Created { get; set; }
-    public DateTime LastUpdated { get; set; }
+    public DateTime? Created { get; set; }
+    public DateTime? LastUpdated { get; set; }
   }
 }

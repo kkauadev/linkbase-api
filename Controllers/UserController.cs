@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using linkbase_api.Context;
-using linkbase_api.DTOs;
-using linkbase_api.Helpers;
-using linkbase_api.Models;
+using LinkBaseApi.Context;
+using LinkBaseApi.DTOs;
+using LinkBaseApi.Helpers;
+using LinkBaseApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace linkbase_api.Controllers
+namespace LinkBaseApi.Controllers
 {
   public class UserController: ControllerBase
   {
@@ -22,9 +22,7 @@ namespace linkbase_api.Controllers
     [HttpGet("/users")]
     public async Task<ActionResult<List<User>>> GetAll()
     {
-      List<User> users = await _dataContext.Users.ToListAsync();
-      Console.WriteLine("Funcionou");
-      return users;
+      return await _dataContext.Users.ToListAsync();
     }
 
     [HttpGet("/user/{id}")]

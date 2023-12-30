@@ -1,7 +1,4 @@
-﻿using BCrypt.Net;
-using System.Security.Cryptography;
-
-namespace linkbase_api.Helpers
+﻿namespace LinkBaseApi.Helpers
 {
   public class PasswordHasher
   {

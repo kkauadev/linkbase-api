@@ -1,7 +1,7 @@
-﻿using linkbase_api.Models;
+﻿using LinkBaseApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace linkbase_api.Context
+namespace LinkBaseApi.Context
 {
   public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
   {
@@ -16,16 +16,25 @@ namespace linkbase_api.Context
 
       modelBuilder.Entity<User>().Property(u => u.Created).HasDefaultValueSql("CURRENT_TIMESTAMP");
       modelBuilder.Entity<User>().Property(u => u.LastUpdated).HasDefaultValueSql("CURRENT_TIMESTAMP");
+      modelBuilder.Entity<User>().Property(u => u.LastUpdated).ValueGeneratedOnUpdate();
 
       modelBuilder.Entity<Folder>()
-        .HasOne(f => f.User)
-        .WithMany(u => u.Folders)
-        .HasForeignKey(f => f.UserId);
+        .HasOne<User>()
+        .WithMany(e => e.Folders)
+        .HasForeignKey(e => e.UserId);
 
       modelBuilder.Entity<Link>()
-        .HasOne(l => l.Folder)
-        .WithMany(f => f.Links)
-        .HasForeignKey(l => l.FolderId);
+        .HasOne<Folder>()
+        .WithMany(e => e.Links)
+        .HasForeignKey(e => e.FolderId);
+
+      modelBuilder.Entity<Folder>().Property(u => u.Created).HasDefaultValueSql("CURRENT_TIMESTAMP");
+      modelBuilder.Entity<Folder>().Property(u => u.LastUpdated).HasDefaultValueSql("CURRENT_TIMESTAMP");
+      modelBuilder.Entity<Folder>().Property(f => f.LastUpdated).ValueGeneratedOnUpdate();
+
+      modelBuilder.Entity<Link>().Property(u => u.Created).HasDefaultValueSql("CURRENT_TIMESTAMP");
+      modelBuilder.Entity<Link>().Property(u => u.LastUpdated).HasDefaultValueSql("CURRENT_TIMESTAMP");
+      modelBuilder.Entity<Link>().Property(l => l.LastUpdated).ValueGeneratedOnUpdate();
     }
   }
 }

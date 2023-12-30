@@ -1,7 +1,7 @@
-﻿using linkbase_api.Models;
+﻿using LinkBaseApi.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace linkbase_api.DTOs
+namespace LinkBaseApi.DTOs
 {
   public class UserDTO
   {

@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
-using linkbase_api.DTOs;
-using linkbase_api.Models;
+using LinkBaseApi.DTOs;
+using LinkBaseApi.Models;
 
-namespace linkbase_api
+namespace LinkBaseApi
 {
   public class Profiles : Profile
   {
       public Profiles() 
       {
         CreateMap<UserDTO, User>();
+        CreateMap<FolderDTO, Folder>();
       }
   }
 }

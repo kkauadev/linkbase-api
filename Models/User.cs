@@ -1,6 +1,4 @@
-﻿
-
-namespace linkbase_api.Models
+﻿namespace LinkBaseApi.Models
 {
   public class User
   {
