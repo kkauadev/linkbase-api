@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using LinkBaseApi.Services;
+﻿using LinkBaseApi.Services;
 using LinkBaseApi.Context;
 using LinkBaseApi.DTOs;
 using LinkBaseApi.Models;
@@ -9,27 +8,43 @@ using Microsoft.EntityFrameworkCore;
 namespace LinkBaseApi.Controllers
 {
   public class FolderController
-      (ILogger<FolderController> logger, DataContext dataContext,
-          IMapper mapper, ValidationService validationService) : ControllerBase
+      (ILogger<FolderController> logger, DataContext dataContext, ValidationService validationService) : ControllerBase
   {
     public readonly ILogger<FolderController> _logger = logger;
     public readonly DataContext _dataContext = dataContext;
-    public readonly IMapper _mapper = mapper;
     public readonly ValidationService _validationService = validationService;
 
-    [HttpGet("/folders/{id}")]
-    public async Task<ActionResult<List<Folder>>> GetFoldersByUser(string id)
+    [HttpGet("/folders/{authorId}")]
+    public async Task<ActionResult<List<FolderViewDTO>>> GetFoldersByUser(string authorId)
     {
-      if (!Guid.TryParse(id, out Guid userId))
+      if (!Guid.TryParse(authorId, out Guid userId))
       {
         return BadRequest("Insira um ID válido");
       }
 
-      return await _dataContext.Folders.Where(p => p.UserId == userId).ToListAsync();
+      List<FolderViewDTO> folders = await _dataContext.Folders
+         .Include(f => f.Links)
+         .Where(f => f.UserId == userId)
+         .Select(f => new FolderViewDTO()
+           {
+             Id = f.Id,
+             Name = f.Name,
+             Description = f.Description,
+             Links = (f.Links.Count == 0) ? null : f.Links.Select(l => new LinkDTOView()
+             {
+               Id = l.Id,
+               Description = l.Description,
+               Title = l.Title,
+               Url = l.Url,
+             }).ToList()
+         })
+         .ToListAsync();
+
+      return Ok(folders);
     }
 
     [HttpPost("/folder/{authorId}")]
-    public async Task<ActionResult<Folder>> CreateFolder(string authorId, [FromBody] FolderDTO folderDTO)
+    public async Task<ActionResult<FolderViewDTO>> CreateFolder(string authorId, [FromBody] FolderDTO folderDTO)
     {
       var (isValid, errorMessage) = _validationService.ValidateFolderCreation(folderDTO);
 
@@ -55,12 +70,31 @@ namespace LinkBaseApi.Controllers
         UserId = userId,
         Name = folderDTO.Name,
         Description = folderDTO.Description ?? null,
+        Links = new List<Link>()
       };
 
       _dataContext.Folders.Add(folder);
       await _dataContext.SaveChangesAsync();
 
-      return CreatedAtAction(nameof(CreateFolder), new { id = folder.Id }, folder);
+      FolderViewDTO folderView = new()
+      {
+        Id = folder.Id,
+        Name = folder.Name,
+        Description = folder.Description,
+        Links = (folder.Links ?? new List<Link>()).Select(l => new LinkDTOView
+        {
+          Id = l.Id,
+          Description = l.Description,
+          Title = l.Title,
+          Url = l.Url,
+        }).ToList()
+      };
+
+      return CreatedAtAction(
+        nameof(CreateFolder),
+        new { id = folder.Id },
+        folderView
+      );
     }
 
     [HttpDelete("/folder/{id}")]
@@ -85,7 +119,7 @@ namespace LinkBaseApi.Controllers
     }
 
     [HttpPut("/folder/{id}")]
-    public async Task<ActionResult<Folder>> UpdateFolderById(string id,[FromBody] FolderDTOUpdate folderDTOUpdate)
+    public async Task<ActionResult<FolderViewDTO>> UpdateFolderById(string id,[FromBody] FolderDTOUpdate folderDTOUpdate)
     {
       var (isValid, errorMessage) = _validationService.ValidateFolderUpdate(folderDTOUpdate);
 
@@ -114,7 +148,21 @@ namespace LinkBaseApi.Controllers
       _dataContext.Update(folder);
       await _dataContext.SaveChangesAsync();
 
-      return Ok(folder);
+      FolderViewDTO folderView = new()
+      {
+        Id = folder.Id,
+        Name = folder.Name,
+        Description = folder.Description,
+        Links = (folder.Links ?? new List<Link>()).Select(l => new LinkDTOView
+        {
+          Id = l.Id,
+          Description = l.Description,
+          Title = l.Title,
+          Url = l.Url,
+        }).ToList()
+      };
+
+      return Ok(folderView);
     }
   }
 }
