@@ -8,7 +8,7 @@
     public required string Email { get; set; }
     public required string Password { get; set; }
     public string? Bio { get; set; }
-    public ICollection<Folder>? Folders { get; set; }
+    public required ICollection<Folder> Folders { get; set; }
     public DateTime? Created { get; set; }
     public DateTime? LastUpdated { get; set; }
   }

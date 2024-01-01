@@ -1,7 +1,6 @@
-﻿using AutoMapper;
-using LinkBaseApi.Services;
+﻿using LinkBaseApi.Services;
 using LinkBaseApi.Context;
-using LinkBaseApi.DTOs;
+using LinkBaseApi.DTOs.User;
 using LinkBaseApi.Helpers;
 using LinkBaseApi.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -9,41 +8,70 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinkBaseApi.Controllers
 {
-  public class UserController: ControllerBase
+    public class UserController(ILogger<UserController> logger, DataContext dataContext, ValidationService validationService) : ControllerBase
   {
-    public readonly ILogger<UserController> _logger;
-    public readonly DataContext _dataContext;
-    public readonly IMapper _mapper;
-    public readonly ValidationService _validationService;
-    public UserController(ILogger<UserController> logger, DataContext dataContext, IMapper mapper, ValidationService validationService) { 
-      _logger = logger;
-      _dataContext = dataContext;
-      _mapper = mapper;
-      _validationService = validationService;
-    }
+    public readonly ILogger<UserController> _logger = logger;
+    public readonly DataContext _dataContext = dataContext;
+    public readonly ValidationService _validationService = validationService;
 
     [HttpGet("/users")]
-    public async Task<ActionResult<List<User>>> GetAll()
+    public async Task<ActionResult<List<UserViewDTO>>> GetAll()
     {
-      return await _dataContext.Users.ToListAsync();
+      List<UserViewDTO>? users = await _dataContext.Users
+        .Include(u => u.Folders)
+        .Select(u => new UserViewDTO()
+           {
+            Email = u.Email,
+            Id = u.Id,
+            Name = u.Name,
+            Username = u.Username,
+            Bio = u.Bio,
+            Folders = u.Folders.Select(f => new UserDTOFolders()
+            {
+              Id = f.Id,
+              Name = f.Name,
+              Description = f.Description
+            }).ToList()
+        })
+        .ToListAsync();
+
+      return users;
     }
 
     [HttpGet("/user/{id}")]
-    public async Task<ActionResult<User>> GetUserById(string id)
+    public async Task<ActionResult<UserViewDTO>> GetUserById(string id)
     {
       if (!Guid.TryParse(id, out Guid userId)) 
       {
         return BadRequest("Insira um id válido");
       }
 
-      User? user = await _dataContext.Users.FindAsync(userId);
+      User? user = await _dataContext
+        .Users
+        .Include(u => u.Folders)
+        .FirstOrDefaultAsync(u => u.Id == userId);
 
       if (user == null) 
       { 
-        return NotFound();
+        return NotFound("O usuário não existe");
       }
 
-      return Ok(user);
+      UserViewDTO userView = new()
+      {
+        Bio = user.Bio,
+        Email = user.Email,
+        Id = user.Id,
+        Name = user.Name,
+        Username = user.Username,
+        Folders = user.Folders.Select(f => new UserDTOFolders() 
+          { 
+            Id = f.Id,
+            Name= f.Name,
+            Description = f.Description
+          }).ToList()
+      };
+
+      return Ok(userView);
     }
 
     [HttpPost("/user")]
@@ -63,12 +91,36 @@ namespace LinkBaseApi.Controllers
       PasswordHasher passwordHasher = new();
       userDTO.Password = passwordHasher.HashPassword(userDTO.Password);
 
-      User user = _mapper.Map<User>(userDTO);
+      User user = new()
+      {
+        Email = userDTO.Email,
+        Name = userDTO.Name,
+        Password = userDTO.Password,
+        Username = userDTO.Username,
+        Folders = new List<Folder>()
+      };
 
       _dataContext.Users.Add(user);
       await _dataContext.SaveChangesAsync();
 
-      return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
+      return CreatedAtAction(
+        nameof(GetUserById),
+        new { id = user.Id }, 
+        new UserViewDTO()
+          { 
+            Email = user.Email,
+            Id = user.Id, 
+            Name = user.Name, 
+            Username = user.Username, 
+            Bio = user.Bio,
+            Folders = user.Folders.Select(f => new UserDTOFolders()
+            {
+              Id = f.Id,
+              Name = f.Name,
+              Description = f.Description
+            }).ToList()
+        }
+      );
     }
 
     [HttpPatch("/user/{id}")]
@@ -130,7 +182,13 @@ namespace LinkBaseApi.Controllers
       _dataContext.Update(user);
       await _dataContext.SaveChangesAsync();
 
-      return Ok();
+      UserUpdateBioViewDTO userUpdateBioViewDTO = new()
+      {
+        Bio = user.Bio,
+        Username = user.Username
+      };
+
+      return Ok(userUpdateBioViewDTO);
     }
 
     [HttpDelete("/user/{id}")]
