@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAutoMapper(typeof(Program));
-
 builder.Services.AddDbContext<DataContext>(options =>
 {
   var connectionString = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION");
@@ -16,6 +14,7 @@ builder.Services.AddScoped<ValidationService>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 var app = builder.Build();
 
@@ -27,6 +26,7 @@ if (app.Environment.IsDevelopment())
   app.UseDeveloperExceptionPage();
 }
 
+app.UseCors("AllowAllOrigins");
 app.MapControllers();
 
 app.Run();
