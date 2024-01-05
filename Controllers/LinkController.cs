@@ -1,12 +1,12 @@
-﻿using LinkBaseApi.Context;
-using LinkBaseApi.DTOs;
-using LinkBaseApi.Models;
-using LinkBaseApi.Services;
+﻿using LinkBaseApi.Application.Services;
+using LinkBaseApi.Domain.Models;
+using LinkBaseApi.Persistence.Context;
+using LinkBaseApi.Persistence.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinkBaseApi.Controllers
 {
-  public class LinkController (ILogger<LinkController> logger, DataContext dataContext, ValidationService validationService) : ControllerBase
+    public class LinkController (ILogger<LinkController> logger, DataContext dataContext, ValidationService validationService) : ControllerBase
   {
     public readonly ILogger _logger = logger;
     public readonly DataContext _dataContext = dataContext;

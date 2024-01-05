@@ -1,14 +1,14 @@
-﻿using LinkBaseApi.Services;
-using LinkBaseApi.Context;
-using LinkBaseApi.DTOs;
-using LinkBaseApi.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using LinkBaseApi.Domain.Models;
+using LinkBaseApi.Persistence.DTOs;
+using LinkBaseApi.Persistence.Context;
+using LinkBaseApi.Application.Services;
 
 namespace LinkBaseApi.Controllers
 {
-  public class FolderController
-      (ILogger<FolderController> logger, DataContext dataContext, ValidationService validationService) : ControllerBase
+    public class FolderController
+    (ILogger<FolderController> logger, DataContext dataContext, ValidationService validationService) : ControllerBase
   {
     public readonly ILogger<FolderController> _logger = logger;
     public readonly DataContext _dataContext = dataContext;
