@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>LinkBaseApi</RootNamespace>
+		<UserSecretsId>8ec71fbd-ed64-45dc-b3d6-9f0ee28de7af</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>.</DockerfileContext>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.5.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\LinkBaseApi.Application\LinkBaseApi.Application.csproj" />
+	  <ProjectReference Include="..\LinkBaseApi.Domain\LinkBaseApi.Domain.csproj" />
+	  <ProjectReference Include="..\LinkBaseApi.Persistence\LinkBaseApi.Persistence.csproj" />
+	</ItemGroup>
+</Project>
