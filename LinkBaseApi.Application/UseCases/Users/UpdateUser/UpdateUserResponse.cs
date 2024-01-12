@@ -1,6 +1,4 @@
 ﻿namespace LinkBaseApi.Application.UseCases.Users.UpdateUser
 {
-	public class UpdateUserResponse
-	{
-	}
+	public record UpdateUserResponse : UserResponse;
 }

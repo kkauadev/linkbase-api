@@ -6,10 +6,12 @@ using MediatR;
 namespace LinkBaseApi.Application.UseCases.Users.CreateUser
 {
 	public class CreateUserHandler
-		(IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper) 
-			: BaseHandler(unitOfWork, userRepository, mapper), 
-			IRequestHandler<CreateUserRequest, CreateUserResponse>
+		(IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper)
+			: IRequestHandler<CreateUserRequest, CreateUserResponse>
 	{
+		private readonly IUnitOfWork _unitOfWork = unitOfWork;
+		private readonly IUserRepository _userRepository = userRepository;
+		private readonly IMapper _mapper = mapper;
 		public async Task<CreateUserResponse> Handle
 			(CreateUserRequest request, CancellationToken cancellationToken)
 		{

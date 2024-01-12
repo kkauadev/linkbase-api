@@ -10,7 +10,6 @@ namespace LinkBaseApi.Application.UseCases.Users.CreateUser
         public required string Email { get; set; }
         public required string Password { get; set; }
         public string? Bio { get; set; }
-        public ICollection<UserDTOFolders>? Folders { get; set; }
     }
 }
 

@@ -1,6 +1,11 @@
-﻿namespace LinkBaseApi.Application.UseCases.Users.UpdateUser
+﻿using LinkBaseApi.Domain.DTOs.User;
+using MediatR;
+
+namespace LinkBaseApi.Application.UseCases.Users.UpdateUser
 {
-	public class UpdateUserRequest
+	public record UpdateUserRequest : IRequest<UpdateUserResponse>
 	{
+		public string? Name { get; set; }
+		public string? Bio { get; set; }
 	}
 }

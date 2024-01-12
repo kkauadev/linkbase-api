@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using LinkBaseApi.Persistence.Context;
-using LinkBaseApi.Application.Services;
 using LinkBaseApi.Domain.DTOs.User;
 using LinkBaseApi.Domain.Models;
 using LinkBaseApi.Application.UseCases.Users.CreateUser;
 using LinkBaseApi.Application.Helpers;
+using LinkBaseApi.LinkBaseApi.Application.UseCases.Users.DeleteUser;
 
 namespace LinkBaseApi.Controllers
 {
@@ -153,24 +153,12 @@ namespace LinkBaseApi.Controllers
         }
 
         [HttpDelete("/user/{id}")]
-        public async Task<ActionResult> DeleteUserById(string id)
+        public async Task<ActionResult> DeleteUserById(Guid id, CancellationToken cancellationToken)
         {
-            if (!Guid.TryParse(id, out Guid userId))
-            {
-                return BadRequest("Insira um id válido");
-            }
+			DeleteUserRequest deleteUserRequest = new() { Id = id };
+			var response = await _mediator.Send(deleteUserRequest, cancellationToken);
 
-            User? user = await _dataContext.Users.FindAsync(userId);
-
-            if (user == null)
-            {
-                return BadRequest();
-            }
-
-            _dataContext.Users.Remove(user);
-            await _dataContext.SaveChangesAsync();
-
-            return Ok($"Usuário ({user.Username} - {user.Id}) removido com sucesso");
+            return Ok($"Usuário {response.Id} removido");
         }
     }
 }
