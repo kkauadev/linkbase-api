@@ -6,7 +6,7 @@ namespace LinkBaseApi.Domain.Interfaces
   {
     void Create(T entity);
     void Update(T entity);
-    void Delete(Guid id, CancellationToken cancellationToken);
+    void Delete(T entity);
     Task<T?> Get(Guid id, CancellationToken cancellationToken);
     Task<List<T>> GetAll(CancellationToken cancellationToken);
   }

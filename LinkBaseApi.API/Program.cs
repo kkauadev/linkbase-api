@@ -1,3 +1,4 @@
+using LinkBaseApi;
 using LinkBaseApi.Application.Services;
 using LinkBaseApi.Persistence;
 
@@ -10,6 +11,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -17,11 +19,14 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
-if (app.Environment.IsDevelopment())
+app.UseExceptionHandler(builder =>
 {
-	app.UseDeveloperExceptionPage();
-}
+});
+
+//if (app.Environment.IsDevelopment())
+//{ 
+	//app.UseDeveloperExceptionPage();
+//}
 
 app.UseCors("AllowAllOrigins");
 app.MapControllers();

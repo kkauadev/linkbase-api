@@ -1,22 +1,33 @@
-﻿using AutoMapper;
+﻿using LinkBaseApi.Application.Exceptions;
+using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
 using MediatR;
 
 namespace LinkBaseApi.LinkBaseApi.Application.UseCases.Users.DeleteUser
 {
-	public class DeleteUserHandler(IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper)
-		: IRequestHandler<DeleteUserRequest, DeleteUserResponse>
+	public record DeleteUserRequest : IRequest<Response<Guid>>
 	{
-		protected readonly IUnitOfWork _unitOfWork = unitOfWork;
-		protected readonly IUserRepository _userRepository = userRepository;
-		protected readonly IMapper _mapper = mapper;
-		public async Task<DeleteUserResponse> Handle(DeleteUserRequest request, CancellationToken cancellationToken)
+		public Guid Id { get; set; }
+	}
+	public class DeleteUserHandler(IUnitOfWork unitOfWork, IUserRepository userRepository)
+		: IRequestHandler<DeleteUserRequest, Response<Guid>>
+	{
+		private readonly IUnitOfWork _unitOfWork = unitOfWork;
+		private readonly IUserRepository _userRepository = userRepository;
+		public async Task<Response<Guid>> Handle(DeleteUserRequest request, CancellationToken cancellationToken)
 		{
-			_userRepository.Delete(request.Id, cancellationToken);
+			var user = await _userRepository.Get(request.Id, cancellationToken);
+
+			if (user == null)
+			{
+				throw new ApiException("User not found.");
+			}
+
+			_userRepository.Delete(user);
 
 			await _unitOfWork.Commit(cancellationToken);
 
-			return _mapper.Map<DeleteUserResponse>(request);
+			return new Response<Guid>(request.Id);
 		}
 
 	}

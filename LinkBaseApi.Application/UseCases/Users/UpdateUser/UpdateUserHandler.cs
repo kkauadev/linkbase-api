@@ -1,24 +1,41 @@
 ﻿using AutoMapper;
+using LinkBaseApi.Application.Exceptions;
+using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
 using LinkBaseApi.Domain.Models;
 using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Users.UpdateUser
 {
+	public record UpdateUserRequest : IRequest<Response<UserResponse>>
+	{
+		public Guid Id { get; set; }
+		public string? Name { get; set; }
+		public string? Bio { get; set; }
+	}
 	public class UpdateUserHandler
 		(IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper)
 			: BaseHandler(unitOfWork, userRepository, mapper), 
-			IRequestHandler<UpdateUserRequest, UpdateUserResponse>
+			IRequestHandler<UpdateUserRequest, Response<UserResponse>>
 	{
-		public async Task<UpdateUserResponse> Handle(UpdateUserRequest request, CancellationToken cancellationToken)
+		public async Task<Response<UserResponse>> Handle(UpdateUserRequest request, CancellationToken cancellationToken)
 		{
-			var user = _mapper.Map<User>(request);
+			var existingUser = await _userRepository.Get(request.Id, cancellationToken);
 
-			_userRepository.Update(user);
+			if (existingUser == null)
+			{
+				throw new ApiException("User Not Found.");
+			}
+
+			_mapper.Map(request, existingUser);
+
+			_userRepository.Update(existingUser);
 
 			await _unitOfWork.Commit(cancellationToken);
 
-			return _mapper.Map<UpdateUserResponse>(user);
+			var response = _mapper.Map<UserResponse>(existingUser);
+
+			return new Response<UserResponse>(response);
 		}
 	}
 }

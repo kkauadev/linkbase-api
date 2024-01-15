@@ -7,8 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="UseCases\Folder\" />
-    <Folder Include="UseCases\Link\" />
+    <Compile Remove="UseCases\Folder\**" />
+    <Compile Remove="UseCases\Link\**" />
+    <EmbeddedResource Remove="UseCases\Folder\**" />
+    <EmbeddedResource Remove="UseCases\Link\**" />
+    <None Remove="UseCases\Folder\**" />
+    <None Remove="UseCases\Link\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="UseCases\Users\DeleteUser\" />
     <Folder Include="UseCases\Users\GetUser\" />
   </ItemGroup>

@@ -7,6 +7,11 @@ using LinkBaseApi.Domain.Models;
 using LinkBaseApi.Application.UseCases.Users.CreateUser;
 using LinkBaseApi.Application.Helpers;
 using LinkBaseApi.LinkBaseApi.Application.UseCases.Users.DeleteUser;
+using LinkBaseApi.LinkBaseApi.Application.UseCases.Users.GetUser;
+using LinkBaseApi.Application.UseCases.Users.GetAllUsers;
+using LinkBaseApi.Application.UseCases.Users.UpdateUser;
+using LinkBaseApi.Application.UseCases.Users;
+using LinkBaseApi.Application.Wrappers;
 
 namespace LinkBaseApi.Controllers
 {
@@ -17,148 +22,80 @@ namespace LinkBaseApi.Controllers
         public readonly IMediator _mediator = mediator;
 
         [HttpGet("/users")]
-        public async Task<ActionResult<List<UserViewDTO>>> GetAll()
+        public async Task<ActionResult<Response<List<UserResponse>>>> GetAll()
         {
-            List<UserViewDTO>? users = await _dataContext.Users
-              .Include(u => u.Folders)
-              .Select(u => new UserViewDTO()
-              {
-                  Email = u.Email,
-                  Id = u.Id,
-                  Name = u.Name,
-                  Username = u.Username,
-                  Bio = u.Bio,
-                  Folders = u.Folders.Select(f => new UserDTOFolders()
-                  {
-                      Id = f.Id,
-                      Name = f.Name,
-                      Description = f.Description
-                  }).ToList()
-              })
-              .ToListAsync();
+            Response<List<UserResponse>> response = await _mediator.Send(new GetAllUsersRequest());
 
-            return users;
+
+            return Ok(response);
         }
 
         [HttpGet("/user/{id}")]
-        public async Task<ActionResult<UserViewDTO>> GetUserById(string id)
+        public async Task<ActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
-            if (!Guid.TryParse(id, out Guid userId))
-            {
-                return BadRequest("Insira um id válido");
-            }
+            GetUserRequest getUserRequest = new() { Id = id };
 
-            User? user = await _dataContext
-              .Users
-              .Include(u => u.Folders)
-              .FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await _mediator.Send(getUserRequest, cancellationToken);
 
-            if (user == null)
-            {
-                return NotFound("O usuário não existe");
-            }
-
-            UserViewDTO userView = new()
-            {
-                Bio = user.Bio,
-                Email = user.Email,
-                Id = user.Id,
-                Name = user.Name,
-                Username = user.Username,
-                Folders = user.Folders.Select(f => new UserDTOFolders()
-                {
-                    Id = f.Id,
-                    Name = f.Name,
-                    Description = f.Description
-                }).ToList()
-            };
-
-            return Ok(userView);
+            return Ok(user);
         }
 
-        [HttpPost("/user")]
-        public async Task<ActionResult<User>> Post([FromBody] CreateUserRequest request, CancellationToken cancellationToken)
+		[HttpPost("/user")]
+        public async Task<ActionResult> Create([FromBody] CreateUserRequest request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
 
             return Ok(response);
         }
 
-        [HttpPatch("/user/{id}")]
-        public async Task<ActionResult<User>> PatchUserById(string id, [FromBody] UserUpdateDTO userDTO)
+        [HttpPut("/user/{id}")]
+        public async Task<ActionResult<User>> UpdateById([FromBody] UpdateUserRequest request, CancellationToken cancellationToken)
         {
-            if (!Guid.TryParse(id, out Guid userId))
-            {
-                return BadRequest("Insira um ID válido");
-            }
-
-            User? existingUser = await _dataContext.Users.FindAsync(userId);
-            if (existingUser == null)
-            {
-                return NotFound("Usuário não encontrado");
-            }
-
-            if (!string.IsNullOrEmpty(userDTO.Password) && userDTO.Password.Length >= 8)
-            {
-                PasswordHasher passwordHasher = new();
-                //existingUser.Password = passwordHasher.HashPassword(userDTO.Password);
-            }
-
-            if (!string.IsNullOrEmpty(userDTO.Name))
-            {
-                existingUser.Name = userDTO.Name;
-            }
-
-            if (!string.IsNullOrEmpty(userDTO.Bio))
-            {
-                existingUser.Bio = userDTO.Bio;
-            }
-
-            await _dataContext.SaveChangesAsync();
-
-            return Ok($"Usuário {existingUser.Username} atualizado com sucesso");
+            var response = await _mediator.Send(request, cancellationToken);
+ 
+            return Ok(response);
         }
 
-        [HttpPatch("/user/bio/{id}")]
-        public async Task<ActionResult> UpdateUserBio(string id, [FromBody] string bio)
-        {
-            if (!Guid.TryParse(id, out Guid userId))
-            {
-                return BadRequest("Insira um ID válido");
-            }
-            if (string.IsNullOrEmpty(bio))
-            {
-                return BadRequest("A Bio não pode ser vazia");
-            }
-
-            User? user = await _dataContext.Users.FindAsync(userId);
-
-            if (user == null)
-            {
-                return NotFound("Usuário não encontrado");
-            }
-
-            user.Bio = bio;
-
-            _dataContext.Update(user);
-            await _dataContext.SaveChangesAsync();
-
-            UserUpdateBioViewDTO userUpdateBioViewDTO = new()
-            {
-                Bio = user.Bio,
-                Username = user.Username
-            };
-
-            return Ok(userUpdateBioViewDTO);
-        }
+        //[HttpPatch("/user/bio/{id}")]
+        //public async Task<ActionResult> UpdateUserBio(string id, [FromBody] string bio)
+        //{
+        //    if (!Guid.TryParse(id, out Guid userId))
+        //    {
+        //        return BadRequest("Insira um ID válido");
+        //    }
+        //    if (string.IsNullOrEmpty(bio))
+        //    {
+        //        return BadRequest("A Bio não pode ser vazia");
+        //    }
+        //
+        //    User? user = await _dataContext.Users.FindAsync(userId);
+        //
+        //    if (user == null)
+        //    {
+        //        return NotFound("Usuário não encontrado");
+        //    }
+        //
+        //    user.Bio = bio;
+        //
+        //    _dataContext.Update(user);
+        //    await _dataContext.SaveChangesAsync();
+        //
+        //    UserUpdateBioViewDTO userUpdateBioViewDTO = new()
+        //    {
+        //        Bio = user.Bio,
+        //        Username = user.Username
+        //    };
+        //
+        //    return Ok(userUpdateBioViewDTO);
+        //}
 
         [HttpDelete("/user/{id}")]
-        public async Task<ActionResult> DeleteUserById(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult> DeleteById(Guid id, CancellationToken cancellationToken)
         {
 			DeleteUserRequest deleteUserRequest = new() { Id = id };
 			var response = await _mediator.Send(deleteUserRequest, cancellationToken);
 
-            return Ok($"Usuário {response.Id} removido");
+            return Ok($"Usuário {response} removido");
         }
     }
 }

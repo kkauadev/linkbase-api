@@ -8,7 +8,7 @@ namespace LinkBaseApi.Application.UseCases.Users.CreateUser
         public CreateUserMapper()
         {
             CreateMap<CreateUserRequest, User>();
-            CreateMap<User, CreateUserResponse>();
+            CreateMap<User, UserResponse>();
         }
     }
 }

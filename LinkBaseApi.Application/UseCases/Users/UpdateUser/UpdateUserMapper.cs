@@ -8,7 +8,7 @@ namespace LinkBaseApi.Application.UseCases.Users.UpdateUser
         public UpdateUserMapper()
         {
             CreateMap<UpdateUserRequest, User>();
-            CreateMap<User, UpdateUserResponse>();
+            CreateMap<User, UserResponse>();
         }
     }
 }

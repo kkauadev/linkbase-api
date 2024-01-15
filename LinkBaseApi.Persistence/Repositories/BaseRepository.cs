@@ -16,10 +16,9 @@ namespace LinkBaseApi.Persistence.Repositories
             _dataContext.Add(entity);
         }
 
-        public void Delete(Guid id, CancellationToken cancellationToken)
+        public void Delete(T entity)
         {
-            var entity = Get(id, cancellationToken);
-            _dataContext.Remove(entity);
+           _dataContext.Remove(entity);
         }
 
 		public void Update(T entity)
@@ -30,7 +29,7 @@ namespace LinkBaseApi.Persistence.Repositories
 
 		public async Task<T?> Get(Guid id, CancellationToken cancellationToken)
         {
-			return await _dataContext.Set<T>().FindAsync([id, cancellationToken], cancellationToken: cancellationToken);
+			return await _dataContext.Set<T>().FindAsync(id);
         }
 
         public async Task<List<T>> GetAll(CancellationToken cancellationToken)
