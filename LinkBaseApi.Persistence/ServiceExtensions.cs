@@ -18,6 +18,9 @@ namespace LinkBaseApi.Persistence
 
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
 			services.AddScoped<IUserRepository, UserRepository>();
+			services.AddScoped<IFolderRepository, FolderRepository>();
+			services.AddScoped<ILinkRepository, LinkRepository>();
+
 			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 		}
 	}
