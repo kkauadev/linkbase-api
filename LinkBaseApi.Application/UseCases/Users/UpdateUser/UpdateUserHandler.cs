@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LinkBaseApi.Application.Common;
 using LinkBaseApi.Application.DTOs;
 using LinkBaseApi.Application.Exceptions;
 using LinkBaseApi.Application.Wrappers;

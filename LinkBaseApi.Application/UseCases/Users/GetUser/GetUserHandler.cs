@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using LinkBaseApi.Application.Common;
 using LinkBaseApi.Application.DTOs;
 using LinkBaseApi.Application.Exceptions;
-using LinkBaseApi.Application.UseCases;
 using LinkBaseApi.Application.UseCases.Users.GetUser;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;

@@ -1,162 +1,122 @@
-﻿using LinkBaseApi.Domain.DTOs;
+﻿using LinkBaseApi.Application.DTOs;
+using LinkBaseApi.Application.UseCases.Folders.CreateFolder;
+using LinkBaseApi.Application.Wrappers;
+using LinkBaseApi.Domain.DTOs;
 using LinkBaseApi.Domain.Models;
 using LinkBaseApi.Persistence.Context;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace LinkBaseApi.Controllers
 {
     public class FolderController
-    (ILogger<FolderController> logger, DataContext dataContext) : ControllerBase
-  {
-    public readonly ILogger<FolderController> _logger = logger;
-    public readonly DataContext _dataContext = dataContext;
-
-    [HttpGet("/folders/{authorId}")]
-    public async Task<ActionResult<List<FolderViewDTO>>> GetFoldersByUser(string authorId)
+    (ILogger<FolderController> logger, DataContext dataContext, IMediator mediator) : ControllerBase
     {
-      if (!Guid.TryParse(authorId, out Guid userId))
-      {
-        return BadRequest("Insira um ID válido");
-      }
+        private readonly ILogger<FolderController> _logger = logger;
+        private readonly DataContext _dataContext = dataContext;
+        private readonly IMediator _mediator = mediator;
 
-      List<FolderViewDTO> folders = await _dataContext.Folders
-         .Include(f => f.Links)
-         .Where(f => f.UserId == userId)
-         .Select(f => new FolderViewDTO()
-           {
-             Id = f.Id,
-             Name = f.Name,
-             Description = f.Description,
-             Links = (f.Links.Count == 0) ? null : f.Links.Select(l => new LinkDTOView()
-             {
-               Id = l.Id,
-               Description = l.Description,
-               Title = l.Title,
-               Url = l.Url,
-             }).ToList()
-         })
-         .ToListAsync();
-
-      return Ok(folders);
-    }
-
-    [HttpPost("/folder/{authorId}")]
-    public async Task<ActionResult<FolderViewDTO>> CreateFolder(string authorId, [FromBody] FolderDTO folderDTO)
-    {
-      //var (isValid, errorMessage) = _validationService.ValidateFolderCreation(folderDTO);
-
-      //if (!isValid)
-      //{
-      //  return BadRequest(errorMessage);
-      //}
-
-      if (!Guid.TryParse(authorId, out Guid userId))
-      {
-        return BadRequest("Insira um ID válido");
-      }
-
-      User? user = await _dataContext.Users.FindAsync(userId);
-
-      if (user == null)
-      {
-        return BadRequest("Usuário não encontrado");
-      }
-
-      Folder folder = new()
-      {
-        UserId = userId,
-        Name = folderDTO.Name,
-        Description = folderDTO.Description ?? null,
-        Links = new List<Link>()
-      };
-
-      _dataContext.Folders.Add(folder);
-      await _dataContext.SaveChangesAsync();
-
-      FolderViewDTO folderView = new()
-      {
-        Id = folder.Id,
-        Name = folder.Name,
-        Description = folder.Description,
-        Links = (folder.Links ?? new List<Link>()).Select(l => new LinkDTOView
+        [HttpGet("/folders/{authorId}")]
+        public async Task<ActionResult<List<FolderViewDTO>>> GetFoldersByUser(string authorId)
         {
-          Id = l.Id,
-          Description = l.Description,
-          Title = l.Title,
-          Url = l.Url,
-        }).ToList()
-      };
+            if (!Guid.TryParse(authorId, out Guid userId))
+            {
+                return BadRequest("Insira um ID válido");
+            }
 
-      return CreatedAtAction(
-        nameof(CreateFolder),
-        new { id = folder.Id },
-        folderView
-      );
-    }
+            List<FolderViewDTO> folders = await _dataContext.Folders
+               .Include(f => f.Links)
+               .Where(f => f.UserId == userId)
+               .Select(f => new FolderViewDTO()
+               {
+                   Id = f.Id,
+                   Name = f.Name,
+                   Description = f.Description,
+                   Links = (f.Links.Count == 0) ? null : f.Links.Select(l => new LinkDTOView()
+                   {
+                       Id = l.Id,
+                       Description = l.Description,
+                       Title = l.Title,
+                       Url = l.Url,
+                   }).ToList()
+               })
+               .ToListAsync();
 
-    [HttpDelete("/folder/{id}")]
-    public async Task<ActionResult<Folder>> DeleteFolder(string id)
-    {
-      if (!Guid.TryParse(id, out Guid folderId))
-      {
-        return BadRequest("Insira um ID de pasta válido");
-      }
+            return Ok(folders);
+        }
 
-      Folder? folder = await _dataContext.Folders.FindAsync(folderId);
-
-      if (folder == null)
-      {
-        return BadRequest("Essa pasta não existe");
-      }
-
-      _dataContext.Folders.Remove(folder);
-      await _dataContext.SaveChangesAsync();
-
-      return Ok($"Pasta ({folder.Name} - {folder.Id}) removida com sucesso");
-    }
-
-    [HttpPut("/folder/{id}")]
-    public async Task<ActionResult<FolderViewDTO>> UpdateFolderById(string id,[FromBody] FolderDTOUpdate folderDTOUpdate)
-    {
-      if (!Guid.TryParse(id, out Guid folderId))
-      {
-        return BadRequest("Insira um ID de pasta válido");
-      }
-
-      Folder? folder = _dataContext.Folders.Find(folderId);
-      if (folder == null)
-      {
-        return BadRequest("A pasta inserida não existe");
-      }
-
-      if (!string.IsNullOrEmpty(folderDTOUpdate.Name))
-      {
-        folder.Name = folderDTOUpdate.Name;
-      }
-      if (!string.IsNullOrEmpty(folderDTOUpdate.Description))
-      {
-        folder.Description = folderDTOUpdate.Description;
-      }
-
-      _dataContext.Update(folder);
-      await _dataContext.SaveChangesAsync();
-
-      FolderViewDTO folderView = new()
-      {
-        Id = folder.Id,
-        Name = folder.Name,
-        Description = folder.Description,
-        Links = (folder.Links ?? new List<Link>()).Select(l => new LinkDTOView
+        [HttpPost("/folder")]
+        public async Task<ActionResult<Response<CreateFolderResponse>>> CreateFolder
+            ([FromBody] CreateFolderRequest request, CancellationToken cancellationToken)
         {
-          Id = l.Id,
-          Description = l.Description,
-          Title = l.Title,
-          Url = l.Url,
-        }).ToList()
-      };
+            var response = await _mediator.Send(request, cancellationToken);
 
-      return Ok(folderView);
+            return Ok();
+        }
+
+        [HttpDelete("/folder/{id}")]
+        public async Task<ActionResult<Folder>> DeleteFolder(string id)
+        {
+            if (!Guid.TryParse(id, out Guid folderId))
+            {
+                return BadRequest("Insira um ID de pasta válido");
+            }
+
+            Folder? folder = await _dataContext.Folders.FindAsync(folderId);
+
+            if (folder == null)
+            {
+                return BadRequest("Essa pasta não existe");
+            }
+
+            _dataContext.Folders.Remove(folder);
+            await _dataContext.SaveChangesAsync();
+
+            return Ok($"Pasta ({folder.Name} - {folder.Id}) removida com sucesso");
+        }
+
+        [HttpPut("/folder/{id}")]
+        public async Task<ActionResult<FolderViewDTO>> UpdateFolderById(string id, [FromBody] FolderDTOUpdate folderDTOUpdate)
+        {
+            if (!Guid.TryParse(id, out Guid folderId))
+            {
+                return BadRequest("Insira um ID de pasta válido");
+            }
+
+            Folder? folder = _dataContext.Folders.Find(folderId);
+            if (folder == null)
+            {
+                return BadRequest("A pasta inserida não existe");
+            }
+
+            if (!string.IsNullOrEmpty(folderDTOUpdate.Name))
+            {
+                folder.Name = folderDTOUpdate.Name;
+            }
+            if (!string.IsNullOrEmpty(folderDTOUpdate.Description))
+            {
+                folder.Description = folderDTOUpdate.Description;
+            }
+
+            _dataContext.Update(folder);
+            await _dataContext.SaveChangesAsync();
+
+            FolderViewDTO folderView = new()
+            {
+                Id = folder.Id,
+                Name = folder.Name,
+                Description = folder.Description,
+                Links = (folder.Links ?? new List<Link>()).Select(l => new LinkDTOView
+                {
+                    Id = l.Id,
+                    Description = l.Description,
+                    Title = l.Title,
+                    Url = l.Url,
+                }).ToList()
+            };
+
+            return Ok(folderView);
+        }
     }
-  }
 }

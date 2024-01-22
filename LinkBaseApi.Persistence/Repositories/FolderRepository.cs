@@ -10,7 +10,6 @@ namespace LinkBaseApi.Persistence.Repositories
     public async Task<Folder?> GetByAuthor(Guid authorId, CancellationToken cancellationToken)
     {
       return await _dataContext.Folders
-        .Include(f => f.Links)
         .FirstOrDefaultAsync(f => f.UserId == authorId, cancellationToken);
     }
   }

@@ -26,4 +26,12 @@
     <ProjectReference Include="..\LinkBaseApi.Domain\LinkBaseApi.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\Folders\DeleteFolder\" />
+    <Folder Include="UseCases\Folders\GetFolder\" />
+    <Folder Include="UseCases\Folders\GetAllFolders\" />
+    <Folder Include="UseCases\Folders\GetFoldersFromUser\" />
+    <Folder Include="UseCases\Folders\UpdateFolder\" />
+  </ItemGroup>
+
 </Project>
