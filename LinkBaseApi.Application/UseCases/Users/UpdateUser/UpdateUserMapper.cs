@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
+using LinkBaseApi.Application.DTOs;
 using LinkBaseApi.Domain.Models;
 
 namespace LinkBaseApi.Application.UseCases.Users.UpdateUser
 {
-	public class UpdateUserMapper : Profile
+    public class UpdateUserMapper : Profile
 	{
         public UpdateUserMapper()
         {

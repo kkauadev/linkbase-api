@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using LinkBaseApi.Application.UseCases.Users.GetUser;
 
 namespace LinkBaseApi.LinkBaseApi.Application.UseCases.Users.GetUser
 {

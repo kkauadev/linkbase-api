@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LinkBaseApi.Application.DTOs;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
 using LinkBaseApi.Domain.Models;
@@ -6,25 +7,18 @@ using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Users.GetAllUsers
 {
-
-	public record GetAllUsersRequest : IRequest<Response<List<UserResponse>>>;
-
-	public class GetAllUsersHandler(IUserRepository userRepository, IMapper mapper) : IRequestHandler<GetAllUsersRequest, Response<List<UserResponse>>>
+    public class GetAllUsersHandler(IUserRepository userRepository, IMapper mapper) : IRequestHandler<GetAllUsersRequest, Response<List<UserResponseWithFolders>>>
 	{
 		private readonly IUserRepository _userRepository = userRepository;
 		private readonly IMapper _mapper = mapper;
 
-		public async Task<Response<List<UserResponse>>> Handle(GetAllUsersRequest request, CancellationToken cancellationToken)
+		public async Task<Response<List<UserResponseWithFolders>>> Handle(GetAllUsersRequest request, CancellationToken cancellationToken)
 		{
-			List<User> users = await _userRepository.GetAll(cancellationToken);
+			List<User> users = await _userRepository.GetAllWithFolders(cancellationToken);
 
-			var result = _mapper.Map<List<UserResponse>>(users);
+			var result = _mapper.Map<List<UserResponseWithFolders>>(users);
 
-			foreach (var user in result)
-			{
-				Console.WriteLine(user.Username);
-			}
-			return new Response<List<UserResponse>>(result);
+			return new Response<List<UserResponseWithFolders>>(result);
 		}
 	}
 }

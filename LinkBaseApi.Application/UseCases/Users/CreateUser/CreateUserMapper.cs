@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LinkBaseApi.Application.DTOs;
 using LinkBaseApi.Domain.Models;
 
 namespace LinkBaseApi.Application.UseCases.Users.CreateUser

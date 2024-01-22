@@ -12,17 +12,17 @@ namespace LinkBaseApi.Persistence.Repositories
             return await _dataContext.Users.FirstOrDefaultAsync(x => x.Username == username, cancellationToken);
         }
 
-        public async Task<User?> GetWithFolders(Guid id, CancellationToken cancellationToken)
-        {
-            return await _dataContext.Users
-              .Include(u => u.Folders)
-              .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
-        }
-
         public async Task<User?> GetById(Guid id, CancellationToken cancellationToken)
         {
             return await _dataContext.Users
-                .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+                .FirstOrDefaultAsync(u => u.Id.Equals(id), cancellationToken);
         }
-    }
+
+        public async Task<List<User>> GetAllWithFolders(CancellationToken cancellationToken)
+        {
+			return await _dataContext.Users
+                .Include(u => u.Folders)
+                .ToListAsync(cancellationToken);
+        }
+	}
 }

@@ -1,19 +1,14 @@
 ﻿using AutoMapper;
+using LinkBaseApi.Application.DTOs;
 using LinkBaseApi.Application.Exceptions;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
-using LinkBaseApi.Domain.Models;
 using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Users.UpdateUser
 {
-	public record UpdateUserRequest : IRequest<Response<UserResponse>>
-	{
-		public Guid Id { get; set; }
-		public string? Name { get; set; }
-		public string? Bio { get; set; }
-	}
-	public class UpdateUserHandler
+
+    public class UpdateUserHandler
 		(IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper)
 			: BaseHandler(unitOfWork, userRepository, mapper), 
 			IRequestHandler<UpdateUserRequest, Response<UserResponse>>

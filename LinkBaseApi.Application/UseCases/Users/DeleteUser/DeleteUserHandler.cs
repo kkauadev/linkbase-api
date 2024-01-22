@@ -1,14 +1,12 @@
 ﻿using LinkBaseApi.Application.Exceptions;
+using LinkBaseApi.Application.UseCases.Users.DeleteUser;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
 using MediatR;
 
 namespace LinkBaseApi.LinkBaseApi.Application.UseCases.Users.DeleteUser
 {
-	public record DeleteUserRequest : IRequest<Response<Guid>>
-	{
-		public Guid Id { get; set; }
-	}
+
 	public class DeleteUserHandler(IUnitOfWork unitOfWork, IUserRepository userRepository)
 		: IRequestHandler<DeleteUserRequest, Response<Guid>>
 	{
