@@ -1,5 +1,6 @@
 ﻿using LinkBaseApi.Application.DTOs;
 using LinkBaseApi.Application.UseCases.Folders.CreateFolder;
+using LinkBaseApi.Application.UseCases.Folders.DeleteFolder;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.DTOs;
 using LinkBaseApi.Domain.Models;
@@ -52,28 +53,16 @@ namespace LinkBaseApi.Controllers
         {
             var response = await _mediator.Send(request, cancellationToken);
 
-            return Ok();
+            return Ok(response);
         }
 
         [HttpDelete("/folder/{id}")]
-        public async Task<ActionResult<Folder>> DeleteFolder(string id)
+        public async Task<ActionResult<Folder>> DeleteFolder
+            (Guid id, CancellationToken cancellationToken)
         {
-            if (!Guid.TryParse(id, out Guid folderId))
-            {
-                return BadRequest("Insira um ID de pasta válido");
-            }
+            var response = await _mediator.Send(new DeleteFolderRequest() { Id = id }, cancellationToken);
 
-            Folder? folder = await _dataContext.Folders.FindAsync(folderId);
-
-            if (folder == null)
-            {
-                return BadRequest("Essa pasta não existe");
-            }
-
-            _dataContext.Folders.Remove(folder);
-            await _dataContext.SaveChangesAsync();
-
-            return Ok($"Pasta ({folder.Name} - {folder.Id}) removida com sucesso");
+            return Ok(response);
         }
 
         [HttpPut("/folder/{id}")]

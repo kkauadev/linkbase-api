@@ -14,12 +14,8 @@ namespace LinkBaseApi.LinkBaseApi.Application.UseCases.Users.DeleteUser
 		private readonly IUserRepository _userRepository = userRepository;
 		public async Task<Response<Guid>> Handle(DeleteUserRequest request, CancellationToken cancellationToken)
 		{
-			var user = await _userRepository.Get(request.Id, cancellationToken);
-
-			if (user == null)
-			{
-				throw new ApiException("User not found.");
-			}
+			var user = await _userRepository.Get(request.Id, cancellationToken) 
+				?? throw new ApiException("User not found.");
 
 			_userRepository.Delete(user);
 

@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UseCases\Folders\DeleteFolder\" />
     <Folder Include="UseCases\Folders\GetFolder\" />
     <Folder Include="UseCases\Folders\GetAllFolders\" />
     <Folder Include="UseCases\Folders\GetFoldersFromUser\" />
