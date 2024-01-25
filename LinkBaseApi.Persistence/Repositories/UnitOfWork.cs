@@ -1,7 +1,7 @@
 ﻿using LinkBaseApi.Domain.Interfaces;
-using LinkBaseApi.Persistence.Context;
+using LinkBaseApi.Infrastructure.Context;
 
-namespace LinkBaseApi.Persistence.Repositories
+namespace LinkBaseApi.Infrastructure.Repositories
 {
 	public class UnitOfWork(DataContext dataContext) : IUnitOfWork
 	{

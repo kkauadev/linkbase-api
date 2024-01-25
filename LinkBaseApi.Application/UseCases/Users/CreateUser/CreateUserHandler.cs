@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LinkBaseApi.Application.Exceptions;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
 using LinkBaseApi.Domain.Models;
@@ -17,6 +18,10 @@ namespace LinkBaseApi.Application.UseCases.Users.CreateUser
 			(CreateUserRequest request, CancellationToken cancellationToken)
 		{
 			var user = _mapper.Map<User>(request);
+
+			if (await _userRepository
+				.GetByEmailOrUsername(user.Email, user.Username, cancellationToken) != null)
+					throw new ApiException("User already exits");
 
 			_userRepository.Create(user);
 

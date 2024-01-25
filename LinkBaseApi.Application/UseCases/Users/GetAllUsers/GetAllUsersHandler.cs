@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LinkBaseApi.Application.DTOs;
+using LinkBaseApi.Application.DTOs.User;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
 using LinkBaseApi.Domain.Models;
@@ -7,7 +7,8 @@ using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Users.GetAllUsers
 {
-    public class GetAllUsersHandler(IUserRepository userRepository, IMapper mapper) : IRequestHandler<GetAllUsersRequest, Response<List<UserResponseWithFolders>>>
+    public class GetAllUsersHandler(IUserRepository userRepository, IMapper mapper) 
+		: IRequestHandler<GetAllUsersRequest, Response<List<UserResponseWithFolders>>>
 	{
 		private readonly IUserRepository _userRepository = userRepository;
 		private readonly IMapper _mapper = mapper;

@@ -1,4 +1,4 @@
-﻿using LinkBaseApi.Application.DTOs;
+﻿using LinkBaseApi.Application.DTOs.User;
 using LinkBaseApi.Application.Wrappers;
 using MediatR;
 

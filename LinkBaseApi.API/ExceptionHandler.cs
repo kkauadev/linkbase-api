@@ -1,7 +1,6 @@
 ﻿using LinkBaseApi.Application.Exceptions;
 using LinkBaseApi.Application.Wrappers;
 using Microsoft.AspNetCore.Diagnostics;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Net;
 using System.Text.Json;
 
@@ -17,10 +16,10 @@ namespace LinkBaseApi
 
 			switch (exception)
 			{
-				case ApiException e:
+				case ApiException:
 					response.StatusCode = (int)HttpStatusCode.BadRequest;
 					break;
-				case KeyNotFoundException e:
+				case KeyNotFoundException:
 					response.StatusCode = (int)HttpStatusCode.NotFound;
 					break;
 				case ValidationException e:

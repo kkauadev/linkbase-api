@@ -24,8 +24,4 @@
     <ProjectReference Include="..\LinkBaseApi.Domain\LinkBaseApi.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>

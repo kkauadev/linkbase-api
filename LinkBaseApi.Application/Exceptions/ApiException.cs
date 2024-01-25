@@ -2,9 +2,9 @@
 
 namespace LinkBaseApi.Application.Exceptions
 {
-    public class ApiException : Exception
-    {
-        public ApiException() : base() { }
+	public class ApiException : Exception
+	{
+        public ApiException() : base("An error occurred while processing the request.") { }
 
         public ApiException(string message) : base(message) { }
 

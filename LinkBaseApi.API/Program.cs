@@ -1,6 +1,6 @@
 using LinkBaseApi;
 using LinkBaseApi.Application.Services;
-using LinkBaseApi.Persistence;
+using LinkBaseApi.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

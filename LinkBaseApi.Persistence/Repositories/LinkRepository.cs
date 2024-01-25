@@ -1,6 +1,7 @@
 ﻿using LinkBaseApi.Domain.Interfaces;
 using LinkBaseApi.Domain.Models;
-using LinkBaseApi.Persistence.Context;
+using LinkBaseApi.Infrastructure.Context;
+using LinkBaseApi.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace LinkBaseApi.Persistence.Repositories

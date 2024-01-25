@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using LinkBaseApi.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using LinkBaseApi.Domain.Interfaces;
 using LinkBaseApi.Persistence.Repositories;
+using LinkBaseApi.Infrastructure.Context;
+using LinkBaseApi.Infrastructure.Repositories;
 
-namespace LinkBaseApi.Persistence
+namespace LinkBaseApi.Infrastructure
 {
 	public static class ServiceExtensions
 	{

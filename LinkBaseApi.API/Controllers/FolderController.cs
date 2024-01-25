@@ -1,13 +1,16 @@
 ﻿using LinkBaseApi.Application.DTOs;
+using LinkBaseApi.Application.DTOs.Folder;
 using LinkBaseApi.Application.UseCases.Folders.CreateFolder;
 using LinkBaseApi.Application.UseCases.Folders.DeleteFolder;
+using LinkBaseApi.Application.UseCases.Folders.GetAllFolders;
+using LinkBaseApi.Application.UseCases.Folders.GetFolder;
+using LinkBaseApi.Application.UseCases.Folders.GetFoldersFromUser;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.DTOs;
 using LinkBaseApi.Domain.Models;
-using LinkBaseApi.Persistence.Context;
+using LinkBaseApi.Infrastructure.Context;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace LinkBaseApi.Controllers
 {
@@ -18,33 +21,29 @@ namespace LinkBaseApi.Controllers
         private readonly DataContext _dataContext = dataContext;
         private readonly IMediator _mediator = mediator;
 
-        [HttpGet("/folders/{authorId}")]
-        public async Task<ActionResult<List<FolderViewDTO>>> GetFoldersByUser(string authorId)
+        [HttpGet("/folders")]
+        public async Task<ActionResult<Response<List<FolderResponseWithLinks>>>> GetAllFolders
+            (CancellationToken cancellationToken)
         {
-            if (!Guid.TryParse(authorId, out Guid userId))
-            {
-                return BadRequest("Insira um ID válido");
-            }
+            var response = await _mediator.Send(new GetAllFoldersRequest(), cancellationToken);
 
-            List<FolderViewDTO> folders = await _dataContext.Folders
-               .Include(f => f.Links)
-               .Where(f => f.UserId == userId)
-               .Select(f => new FolderViewDTO()
-               {
-                   Id = f.Id,
-                   Name = f.Name,
-                   Description = f.Description,
-                   Links = (f.Links.Count == 0) ? null : f.Links.Select(l => new LinkDTOView()
-                   {
-                       Id = l.Id,
-                       Description = l.Description,
-                       Title = l.Title,
-                       Url = l.Url,
-                   }).ToList()
-               })
-               .ToListAsync();
+            return Ok(response);
+        }
 
-            return Ok(folders);
+        [HttpGet("/folders/{id}")]
+        public async Task<ActionResult<FolderResponse>> GetFolders(Guid id)
+        {
+            var response = await _mediator.Send(new GetFolderRequest() { Id = id });
+
+            return Ok(response);
+        }
+
+        [HttpGet("/user/folders/{userId}")]
+        public async Task<ActionResult<List<FolderResponse>>> GetUserFolders(Guid userId, CancellationToken cancellationToken)
+        {
+            var response = await _mediator.Send(new GetFolderFromUserRequest() { UserId = userId }, cancellationToken);
+
+            return Ok(response);
         }
 
         [HttpPost("/folder")]

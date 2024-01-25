@@ -7,7 +7,7 @@ namespace LinkBaseApi.LinkBaseApi.Application.UseCases.Users.GetUser
 	{
         public GetUserValidator()
         {
-			RuleFor(x => x.Id).NotNull();
+			RuleFor(x => x.Id).NotEmpty();
 		}
     }
 }

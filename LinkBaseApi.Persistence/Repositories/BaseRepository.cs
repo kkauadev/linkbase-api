@@ -1,9 +1,9 @@
 ﻿using LinkBaseApi.Domain.Common;
 using LinkBaseApi.Domain.Interfaces;
-using LinkBaseApi.Persistence.Context;
+using LinkBaseApi.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace LinkBaseApi.Persistence.Repositories
+namespace LinkBaseApi.Infrastructure.Repositories
 {
     public class BaseRepository<T>(DataContext dataContext) : IBaseRepository<T> where T : BaseEntity
     {

@@ -8,7 +8,6 @@ using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Users.UpdateUser
 {
-
     public class UpdateUserHandler
 		(IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper)
 			: BaseHandler(unitOfWork, userRepository, mapper), 
@@ -16,12 +15,7 @@ namespace LinkBaseApi.Application.UseCases.Users.UpdateUser
 	{
 		public async Task<Response<UserResponse>> Handle(UpdateUserRequest request, CancellationToken cancellationToken)
 		{
-			var existingUser = await _userRepository.Get(request.Id, cancellationToken);
-
-			if (existingUser == null)
-			{
-				throw new ApiException("User Not Found.");
-			}
+			var existingUser = await _userRepository.Get(request.Id, cancellationToken) ?? throw new ApiException("User Not Found.");
 
 			_mapper.Map(request, existingUser);
 

@@ -1,9 +1,9 @@
 ﻿using LinkBaseApi.Domain.Interfaces;
 using LinkBaseApi.Domain.Models;
-using LinkBaseApi.Persistence.Context;
+using LinkBaseApi.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace LinkBaseApi.Persistence.Repositories
+namespace LinkBaseApi.Infrastructure.Repositories
 {
   public class FolderRepository(DataContext dataContext) : BaseRepository<Folder>(dataContext), IFolderRepository
   {

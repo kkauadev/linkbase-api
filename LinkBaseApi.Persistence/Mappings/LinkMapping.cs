@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace LinkBaseApi.Persistence.Mappings
+namespace LinkBaseApi.Infrastructure.Mappings
 {
 	public class LinkMapping : IEntityTypeConfiguration<Link>
 	{

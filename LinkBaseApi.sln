@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkBaseApi.Application", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkBaseApi.Domain", "LinkBaseApi.Domain\LinkBaseApi.Domain.csproj", "{B78097C2-7865-4008-A898-00AC106AA4C5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkBaseApi.Persistence", "LinkBaseApi.Persistence\LinkBaseApi.Persistence.csproj", "{F712A362-A8F1-4EA7-B49F-EA6DCCA8A1D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkBaseApi.Infrastructure", "LinkBaseApi.Persistence\LinkBaseApi.Infrastructure.csproj", "{F712A362-A8F1-4EA7-B49F-EA6DCCA8A1D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

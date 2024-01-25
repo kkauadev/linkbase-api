@@ -16,12 +16,7 @@ namespace LinkBaseApi.LinkBaseApi.Application.UseCases.Users.GetUser
 	{
 		public async Task<Response<UserResponse>> Handle(GetUserRequest request, CancellationToken cancellationToken)
 		{
-			var user = await _userRepository.GetById(request.Id, cancellationToken);
-
-			if (user == null)
-			{
-				throw new ApiException("User Not Found.");
-			}
+			var user = await _userRepository.GetById(request.Id, cancellationToken) ?? throw new ApiException("User Not Found.");
 
 			var response = _mapper.Map<UserResponse>(user);
 
