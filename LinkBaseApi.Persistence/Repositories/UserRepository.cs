@@ -20,9 +20,14 @@ namespace LinkBaseApi.Persistence.Repositories
 
         public async Task<List<User>> GetAllWithFolders(CancellationToken cancellationToken)
         {
-			return await _dataContext.Users
+            return await _dataContext.Users
                 .Include(u => u.Folders)
                 .ToListAsync(cancellationToken);
         }
-	}
+
+        public async Task<User?> GetByEmailOrUsername(string email, string username, CancellationToken cancellationToken)
+        {
+            return await _dataContext.Users.FirstOrDefaultAsync(x => x.Username == username || x.Email == email, cancellationToken);
+        }
+    }
 }

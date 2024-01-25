@@ -11,8 +11,6 @@ namespace LinkBaseApi.Persistence.Repositories
 
         public void Create(T entity)
         {
-            entity.Id = Guid.NewGuid();
-            entity.Created = DateTime.Now;
             _dataContext.Add(entity);
         }
 
@@ -23,7 +21,7 @@ namespace LinkBaseApi.Persistence.Repositories
 
 		public void Update(T entity)
 		{
-			entity.LastUpdated = DateTime.Now;
+			entity.LastUpdated = DateTimeOffset.UtcNow;
 			_dataContext.Update(entity);
 		}
 

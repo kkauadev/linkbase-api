@@ -10,7 +10,8 @@ namespace LinkBaseApi.Persistence.Mappings
 		{
 			builder.HasKey(x => x.Id);
 
-			builder.Property(x => x.Created).HasDefaultValueSql("getdate()");
+			builder.HasIndex(x => x.Name).IsUnique();
+
 			builder.Property(x => x.Name).IsRequired();
 
 			builder.HasOne<User>()

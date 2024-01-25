@@ -17,7 +17,6 @@ namespace LinkBaseApi.Persistence.Mappings
 			builder.Property(x => x.Name).IsRequired();
 			builder.Property(x => x.Email).IsRequired();
 			builder.Property(x => x.Password).IsRequired();
-			builder.Property(u => u.Created).HasDefaultValueSql("getdate()");
 
 			builder.ToTable("Users");
 		}
