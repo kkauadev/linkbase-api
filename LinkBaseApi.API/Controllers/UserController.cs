@@ -9,6 +9,7 @@ using LinkBaseApi.Application.UseCases.Users.DeleteUser;
 using LinkBaseApi.Application.DTOs;
 using LinkBaseApi.Application.DTOs.User;
 using LinkBaseApi.Infrastructure.Persistence.Context;
+using LinkBaseApi.DTOs;
 
 namespace LinkBaseApi.Controllers
 {
@@ -43,12 +44,12 @@ namespace LinkBaseApi.Controllers
         }
 
         [HttpPut("/user/{id}")]
-        public async Task<ActionResult<Response<UserResponse>>> UpdateById(Guid id, [FromBody] string? name, [FromBody] string? bio, CancellationToken cancellationToken)
+        public async Task<ActionResult<Response<UserResponse>>> UpdateById(Guid id, [FromBody] UpdateUserDTO updateUserDTO, CancellationToken cancellationToken)
         {
 			UpdateUserRequest request = new()
             {
-                Bio = bio,
-                Name = name,
+                Bio = updateUserDTO.Bio,
+                Name = updateUserDTO.Name,
                 Id = id,
             };
 
