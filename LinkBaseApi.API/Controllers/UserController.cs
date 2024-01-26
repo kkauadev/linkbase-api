@@ -8,7 +8,7 @@ using LinkBaseApi.Application.UseCases.Users.GetUser;
 using LinkBaseApi.Application.UseCases.Users.DeleteUser;
 using LinkBaseApi.Application.DTOs;
 using LinkBaseApi.Application.DTOs.User;
-using LinkBaseApi.Infrastructure.Context;
+using LinkBaseApi.Infrastructure.Persistence.Context;
 
 namespace LinkBaseApi.Controllers
 {

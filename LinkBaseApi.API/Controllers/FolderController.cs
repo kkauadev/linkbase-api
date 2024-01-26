@@ -8,7 +8,7 @@ using LinkBaseApi.Application.UseCases.Folders.GetFoldersFromUser;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.DTOs;
 using LinkBaseApi.Domain.Models;
-using LinkBaseApi.Infrastructure.Context;
+using LinkBaseApi.Infrastructure.Persistence.Context;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

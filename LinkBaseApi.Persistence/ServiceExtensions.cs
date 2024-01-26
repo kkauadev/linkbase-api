@@ -2,13 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using LinkBaseApi.Domain.Interfaces;
-using LinkBaseApi.Persistence.Repositories;
-using LinkBaseApi.Infrastructure.Context;
-using LinkBaseApi.Infrastructure.Repositories;
+using LinkBaseApi.Infrastructure.Persistence.Repositories;
+using LinkBaseApi.Infrastructure.Persistence.Context;
+using LinkBaseApi.Infrastructure.Services;
 
 namespace LinkBaseApi.Infrastructure
 {
-	public static class ServiceExtensions
+    public static class ServiceExtensions
 	{
 		public static void ConfigurePersistenceApp(this IServiceCollection services, IConfiguration configuration)
 		{
@@ -18,9 +18,13 @@ namespace LinkBaseApi.Infrastructure
 			services.AddDbContext<DataContext>(opt => opt.UseNpgsql(connectionString));
 
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 			services.AddScoped<IUserRepository, UserRepository>();
 			services.AddScoped<IFolderRepository, FolderRepository>();
 			services.AddScoped<ILinkRepository, LinkRepository>();
+
+			services.AddScoped<IPasswordHashService, PasswordHashService>();
+
 			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", false);
 		}
 	}

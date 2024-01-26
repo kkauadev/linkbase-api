@@ -1,6 +1,6 @@
 ﻿using LinkBaseApi.Domain.DTOs;
 using LinkBaseApi.Domain.Models;
-using LinkBaseApi.Infrastructure.Context;
+using LinkBaseApi.Infrastructure.Persistence.Context;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinkBaseApi.Controllers
