@@ -1,38 +1,30 @@
-﻿using LinkBaseApi.Domain.DTOs;
-using LinkBaseApi.Domain.Models;
-using LinkBaseApi.Infrastructure.Persistence.Context;
+﻿using LinkBaseApi.Application.UseCases.Links.CreateLink;
+using LinkBaseApi.Application.Wrappers;
+using LinkBaseApi.DTOs;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinkBaseApi.Controllers
 {
-    public class LinkController (ILogger<LinkController> logger, DataContext dataContext) : ControllerBase
-  {
-    public readonly ILogger _logger = logger;
-    public readonly DataContext _dataContext = dataContext;
-
-    [HttpPost("/link/{id}")]
-    public async Task<ActionResult<LinkDTOView>> CreateLink(string id, [FromBody] LinkDTO linkDTO)
+	public class LinkController(ILogger<LinkController> logger, IMediator mediator) : ControllerBase
     {
-      if (!Guid.TryParse(id, out Guid folderId))
-      {
-        return BadRequest("Insira um ID válido");
-      }
+        private readonly IMediator _mediator = mediator;
+        private readonly ILogger _logger = logger;
 
-      if (_dataContext.Links.Any(l => l.Title == linkDTO.Title)) { }
+        [HttpPost("folder/link/{folderId}")]
+        public async Task<ActionResult<Response<CreateLinkResponse>>> CreateLink(Guid folderId, [FromBody] CreateLinkDTO linkDTO, CancellationToken cancellationToken)
+        {
+            var linkRequest = new CreateLinkRequest()
+            {
+                FolderId = folderId,
+                Title = linkDTO.Title,
+                Url = linkDTO.Url,
+                Description = linkDTO.Description,
+            };
 
-      Link link = new()
-      {
-        FolderId = folderId,
-        Description = linkDTO.Description,
-        Title = linkDTO.Title,
-        Url = linkDTO.Url
-      };
+            var response = await _mediator.Send(linkRequest, cancellationToken);
 
-      _dataContext.Add(link);
-      await _dataContext.SaveChangesAsync();
-
-      return Ok(link);
+            return Ok(response);
+        }
     }
-  }
-
 }
