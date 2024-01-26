@@ -1,7 +1,7 @@
 ﻿using LinkBaseApi.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace LinkBaseApi.Infrastructure.Context
+namespace LinkBaseApi.Infrastructure.Persistence.Context
 {
     public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
     {

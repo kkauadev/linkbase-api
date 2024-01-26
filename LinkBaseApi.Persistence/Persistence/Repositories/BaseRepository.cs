@@ -1,9 +1,9 @@
 ﻿using LinkBaseApi.Domain.Common;
 using LinkBaseApi.Domain.Interfaces;
-using LinkBaseApi.Infrastructure.Context;
+using LinkBaseApi.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace LinkBaseApi.Infrastructure.Repositories
+namespace LinkBaseApi.Infrastructure.Persistence.Repositories
 {
     public class BaseRepository<T>(DataContext dataContext) : IBaseRepository<T> where T : BaseEntity
     {
@@ -16,18 +16,18 @@ namespace LinkBaseApi.Infrastructure.Repositories
 
         public void Delete(T entity)
         {
-           _dataContext.Remove(entity);
+            _dataContext.Remove(entity);
         }
 
-		public void Update(T entity)
-		{
-			entity.LastUpdated = DateTimeOffset.UtcNow;
-			_dataContext.Update(entity);
-		}
-
-		public async Task<T?> Get(Guid id, CancellationToken cancellationToken)
+        public void Update(T entity)
         {
-			return await _dataContext.Set<T>().FindAsync(id);
+            entity.LastUpdated = DateTimeOffset.UtcNow;
+            _dataContext.Update(entity);
+        }
+
+        public async Task<T?> Get(Guid id, CancellationToken cancellationToken)
+        {
+            return await _dataContext.Set<T>().FindAsync(id);
         }
 
         public async Task<List<T>> GetAll(CancellationToken cancellationToken)
