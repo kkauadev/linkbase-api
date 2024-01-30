@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using LinkBaseApi.Application.DTOs;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
 using LinkBaseApi.Domain.Models;
@@ -7,7 +6,7 @@ using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Folders.CreateFolder
 {
-	public class CreateFolderHandler(IUnitOfWork unitOfWork, IFolderRepository folderRepository, IMapper mapper) : IRequestHandler<CreateFolderRequest, Response<CreateFolderResponse>>
+    public class CreateFolderHandler(IUnitOfWork unitOfWork, IFolderRepository folderRepository, IMapper mapper) : IRequestHandler<CreateFolderRequest, Response<CreateFolderResponse>>
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IFolderRepository _folderRepository = folderRepository;
