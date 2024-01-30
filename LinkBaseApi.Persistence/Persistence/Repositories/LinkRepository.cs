@@ -9,12 +9,12 @@ namespace LinkBaseApi.Infrastructure.Persistence.Repositories
     {
         public async Task<List<Link>> GetByFolderId(Guid folderId, CancellationToken cancellationToken)
         {
-            return await _dataContext.Links.Where(l => l.FolderId == folderId).ToListAsync(cancellationToken);
+            return await _dataContext.Links.Where(l => l.FolderId.Equals(folderId)).ToListAsync(cancellationToken);
         }
 
-		public async Task<Link?> GetByTitleAndFolderId(string title, Guid folderId, CancellationToken cancellationToken)
+		public async Task<Link?> GetByTitleAndId(string title, Guid id, CancellationToken cancellationToken)
 		{
-            return await _dataContext.Links.FirstOrDefaultAsync(l => l.Title.Equals(title) || l.FolderId.Equals(folderId), cancellationToken);
+            return await _dataContext.Links.FirstOrDefaultAsync(l => l.Title.Equals(title) || l.Id.Equals(id), cancellationToken);
 		}
 	}
 }
