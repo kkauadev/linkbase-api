@@ -7,13 +7,13 @@ using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Users.GetAllUsers
 {
-    public class GetAllUsersHandler(IUserRepository userRepository, IMapper mapper) 
-		: IRequestHandler<GetAllUsersRequest, Response<List<UserResponseWithFolders>>>
+    public class GetUsersHandler(IUserRepository userRepository, IMapper mapper) 
+		: IRequestHandler<GetUsersRequest, Response<List<UserResponseWithFolders>>>
 	{
 		private readonly IUserRepository _userRepository = userRepository;
 		private readonly IMapper _mapper = mapper;
 
-		public async Task<Response<List<UserResponseWithFolders>>> Handle(GetAllUsersRequest request, CancellationToken cancellationToken)
+		public async Task<Response<List<UserResponseWithFolders>>> Handle(GetUsersRequest request, CancellationToken cancellationToken)
 		{
 			List<User> users = await _userRepository.GetAllWithFolders(cancellationToken);
 

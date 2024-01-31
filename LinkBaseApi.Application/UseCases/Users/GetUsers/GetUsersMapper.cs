@@ -4,9 +4,9 @@ using LinkBaseApi.Domain.Models;
 
 namespace LinkBaseApi.Application.UseCases.Users.GetAllUsers
 {
-    public class GetAllUsersMapper : Profile
+    public class GetUsersMapper : Profile
 	{
-        public GetAllUsersMapper()
+        public GetUsersMapper()
         {
             CreateMap<User, UserResponseWithFolders>();
         }
