@@ -18,8 +18,10 @@ namespace LinkBaseApi.Application.UseCases.Links.CreateLink
 			var link = _mapper.Map<Link>(request);
 
 			if (await _linkRepository
-				.GetByTitleAndFolderId(link.Title, link.FolderId, cancellationToken) == null)
+				.GetByTitleAndId(link.Title, link.Id, cancellationToken) != null)
+			{
 				throw new ApiException("Link already exits");
+			}
 
 			_linkRepository.Create(link);
 
