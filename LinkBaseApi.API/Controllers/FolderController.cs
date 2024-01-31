@@ -5,9 +5,11 @@ using LinkBaseApi.Application.UseCases.Folders.DeleteFolder;
 using LinkBaseApi.Application.UseCases.Folders.GetAllFolders;
 using LinkBaseApi.Application.UseCases.Folders.GetFolder;
 using LinkBaseApi.Application.UseCases.Folders.GetFoldersFromUser;
+using LinkBaseApi.Application.UseCases.Folders.UpdateFolder;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.DTOs;
 using LinkBaseApi.Domain.Models;
+using LinkBaseApi.DTOs;
 using LinkBaseApi.Infrastructure.Persistence.Context;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +20,6 @@ namespace LinkBaseApi.Controllers
     (ILogger<FolderController> logger, DataContext dataContext, IMediator mediator) : ControllerBase
     {
         private readonly ILogger<FolderController> _logger = logger;
-        private readonly DataContext _dataContext = dataContext;
         private readonly IMediator _mediator = mediator;
 
         [HttpGet("/folders")]
@@ -65,46 +66,13 @@ namespace LinkBaseApi.Controllers
         }
 
         [HttpPut("/folder/{id}")]
-        public async Task<ActionResult<FolderViewDTO>> UpdateFolderById(string id, [FromBody] FolderDTOUpdate folderDTOUpdate)
+        public async Task<ActionResult<FolderViewDTO>> UpdateFolderById(Guid id, [FromBody] UpdateFolderDTO folderDTO, CancellationToken cancellationToken)
         {
-            if (!Guid.TryParse(id, out Guid folderId))
-            {
-                return BadRequest("Insira um ID de pasta válido");
-            }
+            var request = new UpdateFolderRequest() { Id = id, Name = folderDTO.Name, Description = folderDTO.Description };
 
-            Folder? folder = _dataContext.Folders.Find(folderId);
-            if (folder == null)
-            {
-                return BadRequest("A pasta inserida não existe");
-            }
+            var response = await _mediator.Send(request, cancellationToken);
 
-            if (!string.IsNullOrEmpty(folderDTOUpdate.Name))
-            {
-                folder.Name = folderDTOUpdate.Name;
-            }
-            if (!string.IsNullOrEmpty(folderDTOUpdate.Description))
-            {
-                folder.Description = folderDTOUpdate.Description;
-            }
-
-            _dataContext.Update(folder);
-            await _dataContext.SaveChangesAsync();
-
-            FolderViewDTO folderView = new()
-            {
-                Id = folder.Id,
-                Name = folder.Name,
-                Description = folder.Description,
-                Links = (folder.Links ?? new List<Link>()).Select(l => new LinkDTOView
-                {
-                    Id = l.Id,
-                    Description = l.Description,
-                    Title = l.Title,
-                    Url = l.Url,
-                }).ToList()
-            };
-
-            return Ok(folderView);
+            return Ok(response);
         }
     }
 }
