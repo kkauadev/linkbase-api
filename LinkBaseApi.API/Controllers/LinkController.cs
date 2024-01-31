@@ -3,6 +3,7 @@ using LinkBaseApi.Application.UseCases.Links.CreateLink;
 using LinkBaseApi.Application.UseCases.Links.DeleteLink;
 using LinkBaseApi.Application.UseCases.Links.GetAllLinks;
 using LinkBaseApi.Application.UseCases.Links.GetLinkByFolder;
+using LinkBaseApi.Application.UseCases.Links.UpdateLink;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.DTOs;
 using MediatR;
@@ -31,7 +32,7 @@ namespace LinkBaseApi.Controllers
             return Ok(response);
         }
 
-		[HttpPost("folder/link/{folderId}")]
+        [HttpPost("folder/link/{folderId}")]
         public async Task<ActionResult<Response<CreateLinkResponse>>> CreateLink(Guid folderId, [FromBody] CreateLinkDTO linkDTO, CancellationToken cancellationToken)
         {
             var linkRequest = new CreateLinkRequest()
@@ -51,6 +52,16 @@ namespace LinkBaseApi.Controllers
         public async Task<ActionResult<Response<Guid>>> DeleteLink(Guid id, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(new DeleteLinkRequest { Id = id }, cancellationToken);
+
+            return Ok(response);
+        }
+
+        [HttpPut("link/{id}")]
+        public async Task<ActionResult<Response<LinkResponse>>> UpdateLink(Guid id, [FromBody] UpdateLinkDTO linkDTO, CancellationToken cancellationToken)
+        {
+            var request = new UpdateLinkRequest() { Id = id, Title = linkDTO.Title, Url = linkDTO.Url, Description = linkDTO.Description };
+
+            var response = await _mediator.Send(request, cancellationToken);
 
             return Ok(response);
         }
