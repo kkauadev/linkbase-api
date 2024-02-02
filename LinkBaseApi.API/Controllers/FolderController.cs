@@ -1,29 +1,24 @@
-﻿using LinkBaseApi.Application.DTOs;
-using LinkBaseApi.Application.DTOs.Folder;
-using LinkBaseApi.Application.UseCases.Folders.CreateFolder;
+﻿using LinkBaseApi.Application.UseCases.Folders.CreateFolder;
 using LinkBaseApi.Application.UseCases.Folders.DeleteFolder;
 using LinkBaseApi.Application.UseCases.Folders.GetAllFolders;
 using LinkBaseApi.Application.UseCases.Folders.GetFolder;
 using LinkBaseApi.Application.UseCases.Folders.GetFoldersFromUser;
 using LinkBaseApi.Application.UseCases.Folders.UpdateFolder;
 using LinkBaseApi.Application.Wrappers;
-using LinkBaseApi.Domain.DTOs;
-using LinkBaseApi.Domain.Models;
 using LinkBaseApi.DTOs;
-using LinkBaseApi.Infrastructure.Persistence.Context;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinkBaseApi.Controllers
 {
-    public class FolderController
-    (ILogger<FolderController> logger, DataContext dataContext, IMediator mediator) : ControllerBase
+	public class FolderController
+    (ILogger<FolderController> logger, IMediator mediator) : ControllerBase
     {
         private readonly ILogger<FolderController> _logger = logger;
         private readonly IMediator _mediator = mediator;
 
         [HttpGet("/folders")]
-        public async Task<ActionResult<Response<List<FolderResponseWithLinks>>>> GetAllFolders
+        public async Task<ActionResult<Response<List<GetAllFoldersResponse>>>> GetAllFolders
             (CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(new GetAllFoldersRequest(), cancellationToken);
@@ -32,7 +27,7 @@ namespace LinkBaseApi.Controllers
         }
 
         [HttpGet("/folders/{id}")]
-        public async Task<ActionResult<FolderResponse>> GetFolders(Guid id)
+        public async Task<ActionResult<GetFolderResponse>> GetFolders(Guid id)
         {
             var response = await _mediator.Send(new GetFolderRequest() { Id = id });
 
@@ -40,7 +35,8 @@ namespace LinkBaseApi.Controllers
         }
 
         [HttpGet("/user/folders/{userId}")]
-        public async Task<ActionResult<List<FolderResponse>>> GetUserFolders(Guid userId, CancellationToken cancellationToken)
+        public async Task<ActionResult<List<GetFoldersFromUserResponse>>> GetUserFolders
+            (Guid userId, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(new GetFolderFromUserRequest() { UserId = userId }, cancellationToken);
 
@@ -57,7 +53,7 @@ namespace LinkBaseApi.Controllers
         }
 
         [HttpDelete("/folder/{id}")]
-        public async Task<ActionResult<Folder>> DeleteFolder
+        public async Task<ActionResult<Response<DeleteFolderResponse>>> DeleteFolder
             (Guid id, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(new DeleteFolderRequest() { Id = id }, cancellationToken);
@@ -66,7 +62,8 @@ namespace LinkBaseApi.Controllers
         }
 
         [HttpPut("/folder/{id}")]
-        public async Task<ActionResult<FolderViewDTO>> UpdateFolderById(Guid id, [FromBody] UpdateFolderDTO folderDTO, CancellationToken cancellationToken)
+        public async Task<ActionResult<Response<UpdateFolderResponse>>> UpdateFolderByI
+            (Guid id, [FromBody] UpdateFolderDTO folderDTO, CancellationToken cancellationToken)
         {
             var request = new UpdateFolderRequest() { Id = id, Name = folderDTO.Name, Description = folderDTO.Description };
 

@@ -1,8 +1,8 @@
-﻿using LinkBaseApi.Application.DTOs;
-using LinkBaseApi.Application.UseCases.Links.CreateLink;
+﻿using LinkBaseApi.Application.UseCases.Links.CreateLink;
 using LinkBaseApi.Application.UseCases.Links.DeleteLink;
 using LinkBaseApi.Application.UseCases.Links.GetAllLinks;
 using LinkBaseApi.Application.UseCases.Links.GetLinkByFolder;
+using LinkBaseApi.Application.UseCases.Links.GetLinks;
 using LinkBaseApi.Application.UseCases.Links.UpdateLink;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.DTOs;
@@ -11,13 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LinkBaseApi.Controllers
 {
-    public class LinkController(ILogger<LinkController> logger, IMediator mediator) : ControllerBase
+	public class LinkController(ILogger<LinkController> logger, IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
         private readonly ILogger _logger = logger;
 
         [HttpGet("links")]
-        public async Task<ActionResult<string>> GetAllLinks(CancellationToken cancellationToken)
+        public async Task<ActionResult<Response<GetLinksResponse>>> GetAllLinks(CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(new GetLinksRequest(), cancellationToken);
 
@@ -25,7 +25,8 @@ namespace LinkBaseApi.Controllers
         }
 
         [HttpGet("links/{folderId}")]
-        public async Task<ActionResult<Response<List<LinkResponse>>>> GetLinksByFolder(Guid folderId, CancellationToken cancellationToken)
+        public async Task<ActionResult<Response<List<GetLinkByFolderResponse>>>> GetLinksByFolder
+            (Guid folderId, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(new GetLinkByFolderRequest { FolderId = folderId }, cancellationToken);
 
@@ -33,7 +34,8 @@ namespace LinkBaseApi.Controllers
         }
 
         [HttpPost("folder/link/{folderId}")]
-        public async Task<ActionResult<Response<CreateLinkResponse>>> CreateLink(Guid folderId, [FromBody] CreateLinkDTO linkDTO, CancellationToken cancellationToken)
+        public async Task<ActionResult<Response<CreateLinkResponse>>> CreateLink
+            (Guid folderId, [FromBody] CreateLinkDTO linkDTO, CancellationToken cancellationToken)
         {
             var linkRequest = new CreateLinkRequest()
             {
@@ -49,7 +51,7 @@ namespace LinkBaseApi.Controllers
         }
 
         [HttpDelete("link/{id}")]
-        public async Task<ActionResult<Response<Guid>>> DeleteLink(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<Response<DeleteLinkResponse>>> DeleteLink(Guid id, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(new DeleteLinkRequest { Id = id }, cancellationToken);
 
@@ -57,7 +59,8 @@ namespace LinkBaseApi.Controllers
         }
 
         [HttpPut("link/{id}")]
-        public async Task<ActionResult<Response<LinkResponse>>> UpdateLink(Guid id, [FromBody] UpdateLinkDTO linkDTO, CancellationToken cancellationToken)
+        public async Task<ActionResult<Response<UpdateLinkResponse>>> UpdateLink
+            (Guid id, [FromBody] UpdateLinkDTO linkDTO, CancellationToken cancellationToken)
         {
             var request = new UpdateLinkRequest() { Id = id, Title = linkDTO.Title, Url = linkDTO.Url, Description = linkDTO.Description };
 
