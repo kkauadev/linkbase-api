@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using LinkBaseApi.Application.DTOs.Folder;
 using LinkBaseApi.Domain.Models;
 
 namespace LinkBaseApi.Application.UseCases.Folders.GetAllFolders
@@ -8,7 +7,7 @@ namespace LinkBaseApi.Application.UseCases.Folders.GetAllFolders
 	{
 		public GetAllFoldersMapper()
 		{
-			CreateMap<Folder, FolderResponseWithLinks>();
+			CreateMap<Folder, GetAllFoldersResponse>();
 		}
 	}
 }

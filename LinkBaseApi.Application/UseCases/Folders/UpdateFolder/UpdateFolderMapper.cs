@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using LinkBaseApi.Application.DTOs;
 using LinkBaseApi.Domain.Models;
 
 namespace LinkBaseApi.Application.UseCases.Folders.UpdateFolder
@@ -8,7 +7,7 @@ namespace LinkBaseApi.Application.UseCases.Folders.UpdateFolder
 	{
         public UpdateFolderMapper()
         {
-            CreateMap<Folder, FolderResponse>();
+            CreateMap<Folder, UpdateFolderResponse>();
         }
     }
 }

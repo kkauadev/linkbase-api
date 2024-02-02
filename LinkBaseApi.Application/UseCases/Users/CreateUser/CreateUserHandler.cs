@@ -9,13 +9,13 @@ namespace LinkBaseApi.Application.UseCases.Users.CreateUser
 {
 	public class CreateUserHandler
 		(IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper, IPasswordHashService passwordHashService)
-			: IRequestHandler<CreateUserRequest, Response<Guid>>
+			: IRequestHandler<CreateUserRequest, Response<CreateUserResponse>>
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IUserRepository _userRepository = userRepository;
 		private readonly IMapper _mapper = mapper;
 		private readonly IPasswordHashService _passwordHashService = passwordHashService;
-		public async Task<Response<Guid>> Handle
+		public async Task<Response<CreateUserResponse>> Handle
 			(CreateUserRequest request, CancellationToken cancellationToken)
 		{
 			var user = _mapper.Map<User>(request);
@@ -30,7 +30,7 @@ namespace LinkBaseApi.Application.UseCases.Users.CreateUser
 
 			await _unitOfWork.Commit(cancellationToken);
 
-			return new Response<Guid>(user.Id);
+			return new Response<CreateUserResponse>(new CreateUserResponse() { Id = user.Id });
 		}
 	}
 }

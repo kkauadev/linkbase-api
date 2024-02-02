@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LinkBaseApi.Application.DTOs;
+using LinkBaseApi.Application.UseCases.Links.GetLinks;
 using LinkBaseApi.Domain.Models;
 
 namespace LinkBaseApi.Application.UseCases.Links.GetAllLinks
@@ -8,7 +8,7 @@ namespace LinkBaseApi.Application.UseCases.Links.GetAllLinks
 	{
         public GetLinksMapper()
         {
-            CreateMap<Link, LinkResponse>();
+            CreateMap<Link, GetLinksResponse>();
         }
     }
 }

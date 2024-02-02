@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LinkBaseApi.Application.DTOs;
+using LinkBaseApi.Application.UseCases.Users.GetUser;
 using LinkBaseApi.Domain.Models;
 
 namespace LinkBaseApi.LinkBaseApi.Application.UseCases.Users.GetUser
@@ -8,7 +8,7 @@ namespace LinkBaseApi.LinkBaseApi.Application.UseCases.Users.GetUser
 	{
         public GetUserMapper()
         {
-            CreateMap<User, UserResponse>();
+            CreateMap<User, GetUserResponse>();
         }
     }
 }

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Users.CreateUser
 {
-	public record CreateUserRequest : IRequest<Response<Guid>>
+	public record CreateUserRequest : IRequest<Response<CreateUserResponse>>
 	{
 		public required string Username { get; set; }
 		public required string Name { get; set; }

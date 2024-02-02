@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using LinkBaseApi.Application.DTOs;
 using LinkBaseApi.Domain.Models;
 
 namespace LinkBaseApi.Application.UseCases.Links.GetLinkByFolder
@@ -8,7 +7,7 @@ namespace LinkBaseApi.Application.UseCases.Links.GetLinkByFolder
 	{
         public GetLinkByFolderMapper()
         {
-            CreateMap<Link, LinkResponse>();
+            CreateMap<Link, GetLinkByFolderResponse>();
         }
     }
 }

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Links.CreateLink
 {
-	public class CreateLinkRequest : IRequest<Response<CreateLinkResponse>>
+	public record CreateLinkRequest : IRequest<Response<CreateLinkResponse>>
 	{
 		public required Guid FolderId { get; set; }
 		public required string Title { get; set; }

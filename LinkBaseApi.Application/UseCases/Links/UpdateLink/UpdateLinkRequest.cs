@@ -1,10 +1,9 @@
-﻿using LinkBaseApi.Application.DTOs;
-using LinkBaseApi.Application.Wrappers;
+﻿using LinkBaseApi.Application.Wrappers;
 using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Links.UpdateLink
 {
-    public class UpdateLinkRequest : IRequest<Response<LinkResponse>>
+    public record UpdateLinkRequest : IRequest<Response<UpdateLinkResponse>>
     {
         public Guid Id { get; set; }
         public string? Title { get; set; }

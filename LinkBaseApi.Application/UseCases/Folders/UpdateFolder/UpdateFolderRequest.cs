@@ -1,10 +1,9 @@
-﻿using LinkBaseApi.Application.DTOs;
-using LinkBaseApi.Application.Wrappers;
+﻿using LinkBaseApi.Application.Wrappers;
 using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Folders.UpdateFolder
 {
-	public class UpdateFolderRequest : IRequest<Response<FolderResponse>>
+	public class UpdateFolderRequest : IRequest<Response<UpdateFolderResponse>>
 	{
 		public Guid Id { get; set; }
 		public string? Name { get; set; }

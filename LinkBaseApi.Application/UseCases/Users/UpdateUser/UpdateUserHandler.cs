@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using LinkBaseApi.Application.Common;
-using LinkBaseApi.Application.DTOs;
 using LinkBaseApi.Application.Exceptions;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
@@ -8,12 +7,12 @@ using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Users.UpdateUser
 {
-    public class UpdateUserHandler
+	public class UpdateUserHandler
 		(IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper)
 			: BaseHandler(unitOfWork, userRepository, mapper), 
-			IRequestHandler<UpdateUserRequest, Response<UserResponse>>
+			IRequestHandler<UpdateUserRequest, Response<UpdateUserResponse>>
 	{
-		public async Task<Response<UserResponse>> Handle(UpdateUserRequest request, CancellationToken cancellationToken)
+		public async Task<Response<UpdateUserResponse>> Handle(UpdateUserRequest request, CancellationToken cancellationToken)
 		{
 			var existingUser = await _userRepository.Get(request.Id, cancellationToken) ?? throw new ApiException("User Not Found.");
 
@@ -23,9 +22,9 @@ namespace LinkBaseApi.Application.UseCases.Users.UpdateUser
 
 			await _unitOfWork.Commit(cancellationToken);
 
-			var response = _mapper.Map<UserResponse>(existingUser);
+			var response = _mapper.Map<UpdateUserResponse>(existingUser);
 
-			return new Response<UserResponse>(response);
+			return new Response<UpdateUserResponse>(response);
 		}
 	}
 }
