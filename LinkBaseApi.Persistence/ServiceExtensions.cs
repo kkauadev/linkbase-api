@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using LinkBaseApi.Domain.Interfaces;
 using LinkBaseApi.Infrastructure.Persistence.Repositories;
 using LinkBaseApi.Infrastructure.Persistence.Context;
-using LinkBaseApi.Infrastructure.Services;
 
 namespace LinkBaseApi.Infrastructure
 {
@@ -22,8 +21,6 @@ namespace LinkBaseApi.Infrastructure
 			services.AddScoped<IUserRepository, UserRepository>();
 			services.AddScoped<IFolderRepository, FolderRepository>();
 			services.AddScoped<ILinkRepository, LinkRepository>();
-
-			services.AddScoped<IPasswordHashService, PasswordHashService>();
 
 			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", false);
 		}
