@@ -2,11 +2,12 @@
 using LinkBaseApi.Application.Exceptions;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
+using LinkBaseApi.Domain.Interfaces.Model;
 using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Folders.UpdateFolder
 {
-	public class UpdateFolderHandler(IUnitOfWork unitOfWork, IFolderRepository folderRepository, IMapper mapper) : IRequestHandler<UpdateFolderRequest, Response<UpdateFolderResponse>>
+    public class UpdateFolderHandler(IUnitOfWork unitOfWork, IFolderRepository folderRepository, IMapper mapper) : IRequestHandler<UpdateFolderRequest, Response<UpdateFolderResponse>>
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly IFolderRepository _folderRepository = folderRepository;

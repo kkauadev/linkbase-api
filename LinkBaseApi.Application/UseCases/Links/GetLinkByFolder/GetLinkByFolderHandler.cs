@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using LinkBaseApi.Application.Wrappers;
-using LinkBaseApi.Domain.Interfaces;
+using LinkBaseApi.Domain.Interfaces.Model;
 using LinkBaseApi.Domain.Models;
 using MediatR;
 

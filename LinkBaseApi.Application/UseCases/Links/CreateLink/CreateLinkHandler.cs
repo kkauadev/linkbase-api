@@ -2,12 +2,13 @@
 using LinkBaseApi.Application.Exceptions;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
+using LinkBaseApi.Domain.Interfaces.Model;
 using LinkBaseApi.Domain.Models;
 using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Links.CreateLink
 {
-	public class CreateLinkHandler(IUnitOfWork unitOfWork, ILinkRepository linkRepository, IMapper mapper) : IRequestHandler<CreateLinkRequest, Response<CreateLinkResponse>>
+    public class CreateLinkHandler(IUnitOfWork unitOfWork, ILinkRepository linkRepository, IMapper mapper) : IRequestHandler<CreateLinkRequest, Response<CreateLinkResponse>>
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;
 		private readonly ILinkRepository _linkRepository = linkRepository;

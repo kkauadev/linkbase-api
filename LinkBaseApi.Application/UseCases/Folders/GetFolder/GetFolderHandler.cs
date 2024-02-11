@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using LinkBaseApi.Application.Exceptions;
 using LinkBaseApi.Application.Wrappers;
-using LinkBaseApi.Domain.Interfaces;
+using LinkBaseApi.Domain.Interfaces.Model;
 using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Folders.GetFolder
 {
-	public class GetFolderHandler(IFolderRepository folderRepository, IMapper mapper) : IRequestHandler<GetFolderRequest, Response<GetFolderResponse>>
+    public class GetFolderHandler(IFolderRepository folderRepository, IMapper mapper) : IRequestHandler<GetFolderRequest, Response<GetFolderResponse>>
 	{
 		private readonly IFolderRepository _folderRepository = folderRepository;
 		private readonly IMapper _mapper = mapper;

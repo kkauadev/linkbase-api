@@ -2,12 +2,13 @@
 using LinkBaseApi.Application.Exceptions;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
+using LinkBaseApi.Domain.Interfaces.Model;
 using LinkBaseApi.Domain.Models;
 using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Users.CreateUser
 {
-	public class CreateUserHandler
+    public class CreateUserHandler
 		(IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper, IPasswordHashService passwordHashService)
 			: IRequestHandler<CreateUserRequest, Response<CreateUserResponse>>
 	{

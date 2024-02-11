@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using LinkBaseApi.Domain.Interfaces;
 using LinkBaseApi.Infrastructure.Persistence.Repositories;
 using LinkBaseApi.Infrastructure.Persistence.Context;
+using LinkBaseApi.Domain.Interfaces.Model;
 
 namespace LinkBaseApi.Infrastructure
 {

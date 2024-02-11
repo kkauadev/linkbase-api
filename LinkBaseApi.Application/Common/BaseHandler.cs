@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LinkBaseApi.Domain.Interfaces;
+using LinkBaseApi.Domain.Interfaces.Model;
 
 namespace LinkBaseApi.Application.Common
 {

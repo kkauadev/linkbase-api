@@ -1,4 +1,5 @@
 ﻿using LinkBaseApi.Domain.Interfaces;
+using LinkBaseApi.Domain.Interfaces.Model;
 using LinkBaseApi.DTOs;
 using MediatR;
 using Microsoft.IdentityModel.Tokens;

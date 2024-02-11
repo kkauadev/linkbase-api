@@ -2,12 +2,13 @@
 using LinkBaseApi.Application.UseCases.Users.DeleteUser;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
+using LinkBaseApi.Domain.Interfaces.Model;
 using MediatR;
 
 namespace LinkBaseApi.LinkBaseApi.Application.UseCases.Users.DeleteUser
 {
 
-	public class DeleteUserHandler(IUnitOfWork unitOfWork, IUserRepository userRepository)
+    public class DeleteUserHandler(IUnitOfWork unitOfWork, IUserRepository userRepository)
 		: IRequestHandler<DeleteUserRequest, Response<DeleteUserResponse>>
 	{
 		private readonly IUnitOfWork _unitOfWork = unitOfWork;

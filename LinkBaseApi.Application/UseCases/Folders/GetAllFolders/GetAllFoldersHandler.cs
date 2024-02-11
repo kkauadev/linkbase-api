@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using LinkBaseApi.Application.Wrappers;
-using LinkBaseApi.Domain.Interfaces;
+using LinkBaseApi.Domain.Interfaces.Model;
 using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Folders.GetAllFolders
 {
-	public class GetAllFoldersHandler(IFolderRepository folderRepository, IMapper mapper) 
+    public class GetAllFoldersHandler(IFolderRepository folderRepository, IMapper mapper) 
 		: IRequestHandler<GetAllFoldersRequest, Response<List<GetAllFoldersResponse>>>
 	{
 		private readonly IFolderRepository _folderRepository = folderRepository;

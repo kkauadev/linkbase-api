@@ -1,6 +1,6 @@
 ﻿using LinkBaseApi.Domain.Models;
 
-namespace LinkBaseApi.Domain.Interfaces
+namespace LinkBaseApi.Domain.Interfaces.Model
 {
     public interface ILinkRepository : IBaseRepository<Link>
     {

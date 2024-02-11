@@ -1,6 +1,7 @@
 ﻿using LinkBaseApi.Application.Exceptions;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
+using LinkBaseApi.Domain.Interfaces.Model;
 using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Links.DeleteLink;

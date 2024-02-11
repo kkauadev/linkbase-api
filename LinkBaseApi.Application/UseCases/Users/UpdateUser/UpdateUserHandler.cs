@@ -3,11 +3,12 @@ using LinkBaseApi.Application.Common;
 using LinkBaseApi.Application.Exceptions;
 using LinkBaseApi.Application.Wrappers;
 using LinkBaseApi.Domain.Interfaces;
+using LinkBaseApi.Domain.Interfaces.Model;
 using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Users.UpdateUser
 {
-	public class UpdateUserHandler
+    public class UpdateUserHandler
 		(IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper)
 			: BaseHandler(unitOfWork, userRepository, mapper), 
 			IRequestHandler<UpdateUserRequest, Response<UpdateUserResponse>>

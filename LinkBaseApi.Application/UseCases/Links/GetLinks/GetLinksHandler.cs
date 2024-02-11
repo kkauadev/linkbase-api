@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using LinkBaseApi.Application.UseCases.Links.GetLinks;
 using LinkBaseApi.Application.Wrappers;
-using LinkBaseApi.Domain.Interfaces;
+using LinkBaseApi.Domain.Interfaces.Model;
 using MediatR;
 
 namespace LinkBaseApi.Application.UseCases.Links.GetAllLinks
 {
-	public class GetLinksHandler(ILinkRepository linkRepository, IMapper mapper)
+    public class GetLinksHandler(ILinkRepository linkRepository, IMapper mapper)
 				: IRequestHandler<GetLinksRequest, Response<List<GetLinksResponse>>>
 	{
 		private readonly ILinkRepository _linkRepository = linkRepository;

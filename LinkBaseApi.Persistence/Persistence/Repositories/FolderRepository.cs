@@ -1,4 +1,4 @@
-﻿using LinkBaseApi.Domain.Interfaces;
+﻿using LinkBaseApi.Domain.Interfaces.Model;
 using LinkBaseApi.Domain.Models;
 using LinkBaseApi.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
