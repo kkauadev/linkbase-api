@@ -47,9 +47,9 @@ internal class Program
 		{
 			config.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
 
-			config.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+			config.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 			{
-				Description = "Jwt Token",
+				Description = "JWT Token",
 				Type = SecuritySchemeType.Http,
 				Scheme = "bearer"
 			});
@@ -62,8 +62,9 @@ internal class Program
 						Reference = new OpenApiReference
 						{
 							Type = ReferenceType.SecurityScheme,
-							Id = "Bearer"               }
-						},
+							Id = "Bearer" 
+						}
+					},
 					Array.Empty<string>()
 				}
 			});

@@ -9,7 +9,7 @@ using System.Text;
 
 namespace LinkBaseApi.Application.Services
 {
-	public class AuthenticationService(IUserRepository userRepository, IPasswordHashService passwordHashService) : IAuthenticationService
+    public class AuthenticationService(IUserRepository userRepository, IPasswordHashService passwordHashService) : IAuthenticationService
 	{
 		private readonly IUserRepository _userRepository = userRepository;
 		private readonly IPasswordHashService _passwordHashService = passwordHashService;
@@ -17,19 +17,16 @@ namespace LinkBaseApi.Application.Services
 		private const string TokenSecret = "ForTheLoveOfGodStoreAndLoadThisSecurely";
 		private static readonly TimeSpan TokenLifetime = TimeSpan.FromHours(1);
 
-		public string GenerateToken(Guid? userId, string email)
+		public string GenerateToken(Guid userId, string email)
 		{
-			if (userId == null) { throw new ArgumentNullException(nameof(userId)); }
-			
 			var tokenHandler = new JwtSecurityTokenHandler();
 			var key = Encoding.UTF8.GetBytes(TokenSecret);
 
 			var claims = new List<Claim>
 			{
 				new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-				new(JwtRegisteredClaimNames.Sub, email),
-				new(JwtRegisteredClaimNames.Email, email),
-				new("UserId", userId.ToString() ?? "")
+				new(JwtRegisteredClaimNames.Sub, userId.ToString()),
+				new("admin", "false")
 			};
 
 			var tokenDescriptor = new SecurityTokenDescriptor
@@ -45,18 +42,18 @@ namespace LinkBaseApi.Application.Services
 			return jwt;
 		}
 
-		public async Task<(bool, Guid?)> ValidateCredentials(string username, string password, CancellationToken cancellationToken)
+		public async Task<Guid?> ValidateCredentials(string username, string password, CancellationToken cancellationToken)
 		{
 			var userExist = await _userRepository.GetByUsername(username, cancellationToken);
 
 			if (userExist is null)
 			{
-				return (false, null);
+				return null;
 			}
 
 			var isValid = _passwordHashService.VerifyPassword(userExist.Password, password);
 
-			return (isValid, userExist.Id);
+			return isValid ? userExist.Id : null;
 		}
 	}
 }
