@@ -19,6 +19,9 @@ namespace LinkBaseApi
 				case ApiException:
 					response.StatusCode = (int)HttpStatusCode.BadRequest;
 					break;
+				case UnauthorizedException:
+					response.StatusCode = (int)HttpStatusCode.Unauthorized;
+					break;
 				case KeyNotFoundException:
 					response.StatusCode = (int)HttpStatusCode.NotFound;
 					break;
