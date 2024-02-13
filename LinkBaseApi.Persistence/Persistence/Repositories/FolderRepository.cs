@@ -13,5 +13,13 @@ namespace LinkBaseApi.Infrastructure.Persistence.Repositories
               .Where(f => f.UserId == authorId)
               .ToListAsync(cancellationToken: cancellationToken);
         }
-    }
+
+		public async Task<Folder?> GetWithLinks(Guid id, CancellationToken cancellationToken)
+		{
+            return await _dataContext.Folders
+                .Include(f => f.Links)
+                .FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
+                
+		}
+	}
 }
