@@ -12,9 +12,9 @@ namespace LinkBaseApi.Application.UseCases.Folders.GetFolder
 		private readonly IMapper _mapper = mapper;
 		public async Task<Response<GetFolderResponse>> Handle(GetFolderRequest request, CancellationToken cancellationToken)
 		{
-			var user = await _folderRepository.Get(request.Id, cancellationToken) ?? throw new ApiException();
+			var folder = await _folderRepository.GetWithLinks(request.Id, cancellationToken) ?? throw new ApiException();
 
-			var response  = _mapper.Map<GetFolderResponse>(user);
+			var response  = _mapper.Map<GetFolderResponse>(folder);
 
 			return new Response<GetFolderResponse>(response);
 		}
