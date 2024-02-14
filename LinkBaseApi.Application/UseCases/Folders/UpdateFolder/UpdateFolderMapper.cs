@@ -7,6 +7,7 @@ namespace LinkBaseApi.Application.UseCases.Folders.UpdateFolder
 	{
         public UpdateFolderMapper()
         {
+            CreateMap<UpdateFolderRequest, Folder>();
             CreateMap<Folder, UpdateFolderResponse>();
         }
     }
